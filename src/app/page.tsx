@@ -1,7 +1,7 @@
-import ParentProduct from "./components/ProductButton";
-import Banner from "./components/banner";
-import Product from "./components/producto";
-import TestProduct from "./components/ProductComponent";
+import ParentProduct from "../components/ProductButton";
+import Banner from "../components/banner";
+import Product from "../components/producto";
+import TestProduct from "../components/ProductComponent";
 import Link from "next/link";
 
 export default function Home() {
