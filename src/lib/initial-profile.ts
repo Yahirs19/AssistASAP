@@ -28,17 +28,6 @@ export const initialProfile = async () => {
         return profile
     }
 
-    const avatarFile = user.imageUrl
-
-
-    // Esto está en prueba
-    const {data, error} = await supabase.storage
-        .from('profiles')
-        .upload('/avatar1.png', avatarFile);
-
-
-    console.log(data)
-
     // Si es un usuario sin perfil en la app, se lo vamos a crear
     const newProfile = await db.profile.create({
         data: {
@@ -47,7 +36,7 @@ export const initialProfile = async () => {
             apellidoP: `${user.lastName?.split(' ')[0]}`,
             apellidoM: `${user.lastName?.split(' ')[1]}`,
             telephone: user.phoneNumbers[0].phoneNumber,
-            imageUrl: `${data?.path}`,
+            imageUrl: user.imageUrl,
             email: user.emailAddresses[0].emailAddress
         }
     })
