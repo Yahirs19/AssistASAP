@@ -1,21 +1,19 @@
-import Link from "next/link";
-
-import {UserButton, SignedOut, SignedIn} from "@clerk/nextjs";
+import {UserButton, SignedOut, SignedIn, SignInButton} from "@clerk/nextjs";
 
 const UserMenu = () => {
     return (
         <>
             <SignedOut>
-                <Link 
-                href="/sign-in"
-                className="text-gray-500">
-                    Iniciar sesión
-                </Link>
+                <SignInButton mode="modal">
+                    <button className="text-gray-500">Iniciar sesión</button>
+                </SignInButton>
             </SignedOut>
 
             <SignedIn>
                 <UserButton 
                 afterSignOutUrl="/"
+                appearance={{    
+                }}
                 />
             </SignedIn>
         </>

@@ -4,7 +4,12 @@ import Product from "../../components/products/producto";
 import TestProduct from "../../components/products/ProductComponent";
 import Link from "next/link";
 
-export default function Home() {
+import { initialProfile } from "@/lib/initial-profile";
+
+export default async function Home() {
+  // Obtenemos el perfil del usuario
+  const profile = await initialProfile()
+
   return (
     <>
       {/*Pagina principal*/}

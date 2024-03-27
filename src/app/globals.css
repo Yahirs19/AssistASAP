@@ -31,3 +31,9 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Podemos editar completamente los formularios de Clerk 
+de esta forma (tambien usando Tailwind)*/
+.cl-internal-vwxx4q {
+  display: none;
+}
