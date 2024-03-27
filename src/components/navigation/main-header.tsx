@@ -20,7 +20,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import IconImage from "@/app/assets/icon.png";
 
-import UserMenu from './user-menu';
+import UserMenu from '../user-menu';
 
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: false },

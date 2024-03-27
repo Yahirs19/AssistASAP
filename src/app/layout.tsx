@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import MainHeader from "../components/main-header";
+import MainHeader from "../components/navigation/main-header";
 
 import {ClerkProvider} from "@clerk/nextjs";
 import {dark, neobrutalism} from "@clerk/themes";
