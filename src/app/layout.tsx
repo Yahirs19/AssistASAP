@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import MainHeader from "../components/main-header";
 
+import {ClerkProvider} from "@clerk/nextjs";
+import {dark, neobrutalism} from "@clerk/themes";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,12 +18,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /* 
+  ClerkProvider, sirve para hacer uso de las funcionalidades y componentes de Clerk,
+  en este caso se aplicó para toda la aplicación
+
+  Y se ve un ejemplo del uso de los temas predeterminados que Clerk provee
+  para sus componentes
+  */
   return (
-    <html lang="en">
-      <body className="">
-        {/*Main header para manejar las rutas*/}
-        <MainHeader content={children} />
-      </body>
-    </html>
+    <ClerkProvider
+    appearance={{
+      baseTheme: dark,
+      signIn: { baseTheme: neobrutalism}
+    }}
+    >
+      <html lang="en">
+        <body className="">
+          {/*Main header para manejar las rutas*/}
+          <MainHeader content={children} />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
