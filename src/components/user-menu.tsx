@@ -11,9 +11,7 @@ const UserMenu = () => {
 
             <SignedIn>
                 <UserButton 
-                afterSignOutUrl="/"
-                appearance={{    
-                }}
+                afterSignOutUrl="/"              
                 />
             </SignedIn>
         </>

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Esta implementación de las funcionalidades de supabase no es oficial
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
 
