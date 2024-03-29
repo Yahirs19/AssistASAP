@@ -7,7 +7,9 @@ const products = [
   {
     id: 1,
     name: "Prestone Refrigerante anticongelante",
-    href: "#",
+    slug: "prestone-refrigerante-anticongelante",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/aceite.png",
     imageAlt: "Anticongelante",
     price: "$640.00",
@@ -15,7 +17,9 @@ const products = [
   {
     id: 2,
     name: "Bujía para carro ",
-    href: "#",
+    slug: "bujia-para-carro",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/bujia.png",
     imageAlt: "Bujía",
     price: "$1,500.00",
@@ -23,7 +27,9 @@ const products = [
   {
     id: 3,
     name: "Llanta para coche",
-    href: "#",
+    slug: "llanta-para-coche",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/llanta.png",
     imageAlt: "llanta",
     price: "$2,500.00",
@@ -31,7 +37,9 @@ const products = [
   {
     id: 4,
     name: "Prestone Refrigerante anticongelante",
-    href: "#",
+    slug: "prestone-refrigerante-anticongelante",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/aceite.png",
     imageAlt: "Anticongelante",
     price: "$640.00",
@@ -39,7 +47,9 @@ const products = [
   {
     id: 5,
     name: "Bujía para carro ",
-    href: "#",
+    slug: "bujia-para-carro",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/bujia.png",
     imageAlt: "Bujía",
     price: "$1,500.00",
@@ -47,7 +57,9 @@ const products = [
   {
     id: 6,
     name: "Llanta para coche",
-    href: "#",
+    slug: "llanta-para-coche",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
     imageSrc: "/llanta.png",
     imageAlt: "llanta",
     price: "$2,500.00",

@@ -1,14 +1,18 @@
+import Link from "next/link";
+
 export default function ProductItem({
   id,
+  slug,
   name,
-  href,
+  description,
   imageSrc,
   imageAlt,
   price,
 }: {
   id: number;
+  slug: string;
   name: string;
-  href: string;
+  description: string;
   imageSrc: string;
   imageAlt: string;
   price: string;
@@ -23,10 +27,10 @@ export default function ProductItem({
         />
       </div>
       <h3 className="mt-4 text-sm text-gray-700">
-        <a href={href}>
+        <Link href={`/products/${slug}`}>
           <span className="absolute inset-0" />
           {name}
-        </a>
+        </Link>
       </h3>
       <p className="mt-1 text-sm font-medium text-gray-900">{price}</p>
     </>

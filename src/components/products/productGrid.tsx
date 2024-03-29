@@ -2,8 +2,9 @@ import ProductItem from "./productItem";
 
 type Product = {
   id: number;
+  slug: string;
   name: string;
-  href: string;
+  description: string;
   imageSrc: string;
   imageAlt: string;
   price: string;
