@@ -20,7 +20,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import IconImage from "@/app/assets/icon.png";
 
-import UserMenu from '../user-menu';
+import UserMenu from "../user-menu";
 
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: false },
@@ -40,12 +40,14 @@ export default function MainHeader({ content }: { content: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const path = usePathname();
 
-  
-
   return (
     <>
       {/*Imagen de fondo*/}
-      
+      <Image
+        className="absolute w-full top-0 left-0 z-[-1]"
+        src={MapImage}
+        alt="Mapa Iamgen"
+      />
 
       {/*Componente de navbar y dashboard*/}
       <div>
@@ -276,7 +278,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                   aria-hidden="true"
                 />
 
-                <UserMenu/>
+                <UserMenu />
               </div>
             </div>
           </div>
