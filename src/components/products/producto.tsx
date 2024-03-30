@@ -4,7 +4,7 @@ import { Fragment, MouseEventHandler, useState } from "react";
 import { Dialog, RadioGroup, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/20/solid";
-import AceiteImg from "@/app/assets/aceite.png";
+import AceiteImg from "@/assets/aceite.png";
 
 const product = {
   name: "Garrafa de Aceite Multigrado Mineral 20W-50 Mobil...",

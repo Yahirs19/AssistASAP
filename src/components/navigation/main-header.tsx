@@ -1,5 +1,5 @@
 "use client";
-import MapImage from "@/app/assets/map.jpg";
+
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
@@ -18,7 +18,8 @@ import {
 import Link from "next/link";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import IconImage from "@/app/assets/icon.png";
+import MapImage from "@/assets/map.jpg";
+import IconImage from "@/assets/icon.png";
 
 import UserMenu from "../user-menu";
 
