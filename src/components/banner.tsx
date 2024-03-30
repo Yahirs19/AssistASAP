@@ -1,5 +1,5 @@
 import Image from "next/image";
-import MecanicoImg from "@/app/assets/mecanico.png";
+import MecanicoImg from "@/assets/mecanico.png";
 
 export default function Banner() {
   return (

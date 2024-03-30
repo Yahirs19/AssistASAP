@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import MainHeader from "../components/navigation/main-header";
+import GoogleMapsLayout from "@/app/(maps)/mapsTest/layout";
 
 import {ClerkProvider} from "@clerk/nextjs";
 import {dark, neobrutalism} from "@clerk/themes";
@@ -34,8 +35,10 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className="">
-          {/*Main header para manejar las rutas*/}
-          <MainHeader content={children} />
+          <GoogleMapsLayout>
+            {/*Main header para manejar las rutas*/}
+            <MainHeader content={children} />
+          </GoogleMapsLayout>
         </body>
       </html>
     </ClerkProvider>
