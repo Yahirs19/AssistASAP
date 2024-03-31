@@ -1,11 +1,12 @@
 import ProductGrid from "@/components/products/productGrid";
 import { Button } from "@/components/ui/button";
+import { mostrarProducto } from "@/lib/queries/productQueries";
 import Link from "next/link";
 
 {
   /*LISTA DE PRODUCTOS Es un simple mapeo basado al array */
 }
-const products = [
+/*const products = [
   {
     id: 1,
     name: "Prestone Refrigerante anticongelante",
@@ -66,8 +67,10 @@ const products = [
     imageAlt: "llanta",
     price: "$2,500.00",
   },
-];
-export default function ProductsPage() {
+];*/
+export default async function ProductsPage() {
+  const products = await mostrarProducto();
+
   return (
     <>
       <div className="bg-white">

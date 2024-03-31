@@ -1,14 +1,14 @@
-import ParentProduct from "../../components/products/ProductButton";
+import ParentProduct from "../../components/products/mainPageProducts/ProductButton";
 import Banner from "../../components/banner";
-import Product from "../../components/products/producto";
-import TestProduct from "../../components/products/ProductComponent";
+import Product from "../../components/products/mainPageProducts/producto";
+import TestProduct from "../../components/products/mainPageProducts/ProductComponent";
 import Link from "next/link";
 
 import { initialProfile } from "@/lib/initial-profile";
 
 export default async function Home() {
   // Obtenemos el perfil del usuario
-  const profile = await initialProfile()
+  const profile = await initialProfile();
 
   return (
     <>
