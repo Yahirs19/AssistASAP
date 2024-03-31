@@ -1,22 +1,18 @@
-"use client"
+"use client";
 
-import {usePathname} from 'next/navigation';
+import { usePathname } from "next/navigation";
 
-import GoogleMapsInteface from '@/components/googleMaps/google-maps-interace';
+import GoogleMapsInteface from "@/components/googleMaps/google-maps-interace";
 
-const GoogleMapsLayout = ({children}:{children:React.ReactNode}) => {
-    const pathname = usePathname();
+const GoogleMapsLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
 
-    // Esto se hizo para que no se viera el layout de la aplicación (motivos de testeo para el Google Maps)
-    if(pathname === "/mapsTest"){
-        return <GoogleMapsInteface />
-    }
+  // Esto se hizo para que no se viera el layout de la aplicación (motivos de testeo para el Google Maps)
+  if (pathname === "/mapsTest") {
+    return <GoogleMapsInteface />;
+  }
 
-    return (
-        <div>
-            {children}
-        </div>
-    )
-}
+  return <div>{children}</div>;
+};
 
 export default GoogleMapsLayout;

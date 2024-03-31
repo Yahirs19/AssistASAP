@@ -44,6 +44,10 @@ model Product{
   name String
   imageUrl String @db.Text
   price Decimal @db.Decimal(8,2)
+  slug String
+  description String
+    
+  
 
   // Quien es el propietario del producto
   profileId String

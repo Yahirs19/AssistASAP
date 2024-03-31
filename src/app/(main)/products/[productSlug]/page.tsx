@@ -1,5 +1,4 @@
-"use client";
-
+import { buscarProductoSlug } from "@/lib/queries/mostrarProducto";
 import {
   CheckIcon,
   StarIcon,
@@ -7,7 +6,7 @@ import {
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 
-const product = {
+/*const product = {
   id: 1,
   name: "Prestone Refrigerante anticongelante",
   slug: "prestone-refrigerante-anticongelante",
@@ -16,10 +15,15 @@ const product = {
   imageSrc: "/aceite.png",
   imageAlt: "Anticongelante",
   price: "$640.00",
-};
+};*/
+interface RouteParams {
+  productSlug: string;
+}
 const reviews = { average: 4, totalCount: 1624 };
 
-export default function Example() {
+export default async function Example({ params }: { params: RouteParams }) {
+  const product = await buscarProductoSlug(params.productSlug);
+
   return (
     <div className="bg-white">
       <Link href="/products" className="">
