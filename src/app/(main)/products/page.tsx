@@ -1,4 +1,6 @@
 import ProductGrid from "@/components/products/productGrid";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 {
   /*LISTA DE PRODUCTOS Es un simple mapeo basado al array */
@@ -69,7 +71,7 @@ export default function ProductsPage() {
   return (
     <>
       <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-25 lg:max-w-7xl lg:px-8">
           <div className="md:flex md:items-center md:justify-between">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
               Todos los productos
@@ -77,6 +79,9 @@ export default function ProductsPage() {
           </div>
 
           <ProductGrid products={products} />
+          <Link href="/agregar-producto">
+            <Button variant="outline">Agregar Producto</Button>
+          </Link>
         </div>
       </div>
     </>

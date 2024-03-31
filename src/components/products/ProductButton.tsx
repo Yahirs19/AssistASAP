@@ -1,6 +1,14 @@
 "use client ";
 
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 const products = [
   {
     id: 1,
@@ -25,37 +33,50 @@ function ProductButton({ onOpen }: { onOpen: MouseEventHandler }) {
     <>
       <div className="bg-white ">
         <div className="mx-auto  px-4 py-4 sm:px-6 sm:py-2 lg:max-w-3xl lg:px-8">
-          <div className="mt-6 gap-x-6 gap-y-10 carousel">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="group relative flex flex-col carousel-item w-full"
-              >
-                <div className=" w-full overflow-hidden rounded-md   group-hover:opacity-75 lg:h-full">
-                  <img
-                    src={product.imageSrc}
-                    alt={product.imageAlt}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div>
-                    <h3 className="text-sm text-gray-700">
-                      <p onClick={onOpen}>
-                        <span aria-hidden="true" className="absolute inset-0" />
-                        {product.name}
-                      </p>
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {product.color}
-                    </p>
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    {product.price}
-                  </p>
-                </div>
+          <div className="mt-6 gap-x-6 gap-y-10">
+            <Carousel>
+              <CarouselContent>
+                {products.map((product) => (
+                  <CarouselItem>
+                    <div
+                      key={product.id}
+                      className="group relative flex flex-col w-full"
+                    >
+                      <div className=" w-full overflow-hidden rounded-md   group-hover:opacity-75 lg:h-full">
+                        <img
+                          src={product.imageSrc}
+                          alt={product.imageAlt}
+                          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                        />
+                      </div>
+                      <div className="mt-4 flex justify-between">
+                        <div>
+                          <h3 className="text-sm text-gray-700">
+                            <p onClick={onOpen}>
+                              <span
+                                aria-hidden="true"
+                                className="absolute inset-0"
+                              />
+                              {product.name}
+                            </p>
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-500">
+                            {product.color}
+                          </p>
+                        </div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {product.price}
+                        </p>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="hidden lg:block ">
+                <CarouselPrevious />
+                <CarouselNext />
               </div>
-            ))}
+            </Carousel>
           </div>
           {/*<button
             onClick={onOpen} // Llama a la función onOpen cuando se hace clic en el botón
