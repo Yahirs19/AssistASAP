@@ -121,17 +121,26 @@ const GoogleMapsMapSection = () => {
       useEffect(()=>{
         let infoWindow = new google.maps.InfoWindow();
 
-        let options = {enableHighAccuracy: true,timeout: 2000,maximumAge: 0,desiredAccuracy: 0};
+        let options = {timeout: 2000,maximumAge: 0};
 
         if(navigator.geolocation){
           const watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+            const pos = {lat: position.coords.latitude, lng: position.coords.longitude};
             setLocation({
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               timestamp: position.timestamp
             })
             console.log("Localización actualizada");
-            map?.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+
+            // const marker = new google.maps.marker.AdvancedMarkerElement({
+            //   map,
+            //   position: pos,
+            //   title: 'Localización'
+            // })
+
+            
+
           },
           ()=>{
             handleLocationError(true, infoWindow, map?.getCenter()!);
@@ -145,7 +154,7 @@ const GoogleMapsMapSection = () => {
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map?.getCenter()!);
         }
-      }, [location?.latitude, location?.longitude]);
+      }, []);
       
       // Función que se realizará en cuanto se cargue el mapa
       const onLoad = useCallback(function callback(map: google.maps.Map) {
@@ -263,6 +272,8 @@ const GoogleMapsMapSection = () => {
                   </div>
                 </OverlayView>
               </MarkerF>:null}
+
+              
               <DirectionsRenderer
                 directions={directionRoutePoints}
                 options={{
