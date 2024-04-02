@@ -13,30 +13,28 @@ import { LoadScript } from "@react-google-maps/api";
 
 export default function GoogleMapsInteface(){
     // Manejo de estados, que manejan los valores de los inputs para el desplegar los puntos y la ruta en el mapa
-    const [source, setSource] = useState<Point | undefined>();
-    const [destination, setDestination] = useState<Point | undefined>();
+    const [source, setSource] = useState<Point>();
+    const [destination, setDestination] = useState<Point>();
 
-    if(source && destination)
-    {
-        return(
-            <SourceContext.Provider value={{source, setSource}}>
-                <DestinationContext.Provider value={{destination, setDestination}}>
-                    <LoadScript
-                    libraries={['places']}
-                    googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string}
-                    >
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div>
-                                <GoogleMapsSearchInputs />
-                            </div>
-
-                            <div>
-                                <GoogleMapsMapSection />
-                            </div>
+    
+    return(
+        <SourceContext.Provider value={{source, setSource}}>
+            <DestinationContext.Provider value={{destination, setDestination}}>
+                <LoadScript
+                libraries={['places']}
+                googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string}
+                >
+                    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <GoogleMapsSearchInputs />
                         </div>
-                    </LoadScript>  
-                </DestinationContext.Provider>
-            </SourceContext.Provider>
-        )
-    }
+
+                        <div>
+                            <GoogleMapsMapSection />
+                        </div>
+                    </div>
+                </LoadScript>  
+            </DestinationContext.Provider>
+        </SourceContext.Provider>
+    )  
 }

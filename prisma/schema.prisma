@@ -15,7 +15,7 @@ datasource db {
   relationMode = "prisma"
 }
 
-enum UserType{
+enum UserType {
   CLIENT
   MECHANIC
 }
@@ -34,6 +34,8 @@ model Profile{
   // Un mecánico puede tener muchos productos
   products Product[]
 
+  services Service[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -47,6 +49,7 @@ model Product{
   slug String
   description String
     
+  ordenesServicio ProductosEnOrdenes[]
   
 
   // Quien es el propietario del producto
@@ -54,4 +57,68 @@ model Product{
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
+}
+
+model Service {
+  id String @id @default(uuid())
+  name String
+  imageUrl String @db.Text
+  price Decimal @db.Decimal(8,2)
+  slug String
+  description String
+
+
+  ordenesServicio ServiciosEnOrdenes[]
+    
+  
+
+  // Quien es el propietario del producto
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+
+  @@index([profileId])
+}
+
+enum EstadoOrdenServicio {
+  PENDIENTE
+  EN_PROGRESO
+  COMPLETADO
+}
+
+model OrdenServicio {
+  id String @id @default(uuid())
+  fecha DateTime @default(now())
+  estado EstadoOrdenServicio @default(PENDIENTE)
+  total Decimal @db.Decimal(10,2)
+
+  servicios ServiciosEnOrdenes[]
+
+  productos ProductosEnOrdenes[]
+
+}
+
+
+model ServiciosEnOrdenes {
+  idAsignacion String @id @default(uuid())
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
+  ordenServicioID String
+  servicio Service @relation(fields:[servicioID], references: [id])
+  servicioID String
+  assignedAt DateTime @default(now())
+
+  @@index([ordenServicioID])
+  @@index([servicioID])
+}
+
+model ProductosEnOrdenes {
+  idAsignacion String @id @default(uuid())
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
+  ordenServicioID String
+  producto Product @relation(fields:[productoID], references: [id])
+  productoID String
+  assignedAt DateTime @default(now())
+
+  @@index([ordenServicioID])
+  @@index([productoID])
 }
