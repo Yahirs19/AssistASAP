@@ -108,7 +108,7 @@ model OrdenServicio {
   id String @id @default(uuid())
   fecha DateTime @default(now())
   estado EstadoOrdenServicio @default(PENDIENTE)
-  total Decimal @db.Decimal(10,2)
+  total Decimal @db.Decimal(10,2) @default(0.0)
 
   // Ver que servicios están asociados a esta orden de servicio
   servicios ServiciosEnOrdenes[]
@@ -120,39 +120,39 @@ model OrdenServicio {
 
 // Tabla que sirve para indicar que muchos servicios están en muchas ordenes de servicio
 model ServiciosEnOrdenes {
-  idAsignacion String @id @default(uuid())
-
   // ID de la orden de servicio al que se asocia
-  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
+  // Si se elimina la orden de servicio a la que esta asociada, se elimina esta asignacion
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
   ordenServicioID String
 
   // ID del servicio al que se asocia
-  servicio Service @relation(fields:[servicioID], references: [id])
+  servicio Service @relation(fields:[servicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
   servicioID String
 
   assignedAt DateTime @default(now())
 
 
-  @@index([ordenServicioID])
+  @@id(name:"IDAsignacion", [ordenServicioID, servicioID])
   @@index([servicioID])
+  @@index([ordenServicioID])
 }
 
 // Muchos productos pueden estar en muchas ordenes de servicio
 model ProductosEnOrdenes {
-  idAsignacion String @id @default(uuid())
-
   // ID de la orden de servicio al que se asocia
-  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
+  // Si se elimina la orden de servicio a la que esta asociada, se elimina esta asignacion
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
   ordenServicioID String
 
   // ID del producto al que se asocia
-  producto Product @relation(fields:[productoID], references: [id])
+  producto Product @relation(fields:[productoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productoID String
 
   assignedAt DateTime @default(now())
 
   cantidad Int
 
-  @@index([ordenServicioID])
+  @@id(name: "IDAsignacion", [ordenServicioID, productoID])
   @@index([productoID])
+  @@index([ordenServicioID])
 }
