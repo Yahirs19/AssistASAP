@@ -15,10 +15,7 @@ datasource db {
   relationMode = "prisma"
 }
 
-enum UserType {
-  CLIENT
-  MECHANIC
-}
+
 // Tabla Profile, que guardara los datos de los usuarios autenticados con Clerk
 model Profile{
   id     String @id @default(uuid())
@@ -28,16 +25,35 @@ model Profile{
   apellidoM String
   email String @db.Text
   telephone String
-  type UserType @default(CLIENT)
   imageUrl String @db.Text
+
+  // Un perfil puede ser de un mecánico, o de un cliente, o ninguno
+  mechanic Mechanic?
+  client Client?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Client {
+  id String @id @default(uuid())
+
+  // Un cliente, forzosamente tiene un perfil
+  profileId String @unique
+  profile Profile @relation(fields:[profileId], references: [id])
+}
+
+model Mechanic {
+  id     String @id @default(uuid())
+
+  // Un mecanico, forzosamente tiene un perfil
+  profileId String @unique
+  profile Profile @relation(fields:[profileId], references: [id])
 
   // Un mecánico puede tener muchos productos
   products Product[]
 
   services Service[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 // Tabla Product, donde se guardarán los productos que se van a vender
@@ -49,14 +65,15 @@ model Product{
   slug String
   description String
     
+  // Un producto, puede estar en muchas ordenes de servicio
   ordenesServicio ProductosEnOrdenes[]
   
 
   // Quien es el propietario del producto
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  mechanicId String @default("TEST")
+  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade)
 
-  @@index([profileId])
+  @@index([mechanicId])
 }
 
 model Service {
@@ -67,17 +84,17 @@ model Service {
   slug String
   description String
 
-
+  // Un servicio, puede estar en muchas ordenes de servicio
   ordenesServicio ServiciosEnOrdenes[]
     
   
 
   // Quien es el propietario del producto
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  mechanicId String
+  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade)
 
 
-  @@index([profileId])
+  @@index([mechanicId])
 }
 
 enum EstadoOrdenServicio {
@@ -86,38 +103,55 @@ enum EstadoOrdenServicio {
   COMPLETADO
 }
 
+// Tabla de las ordenes de servicio
 model OrdenServicio {
   id String @id @default(uuid())
   fecha DateTime @default(now())
   estado EstadoOrdenServicio @default(PENDIENTE)
   total Decimal @db.Decimal(10,2)
 
+  // Ver que servicios están asociados a esta orden de servicio
   servicios ServiciosEnOrdenes[]
 
+  // Ver que productos están asociados a esta orden de servicio
   productos ProductosEnOrdenes[]
 
 }
 
-
+// Tabla que sirve para indicar que muchos servicios están en muchas ordenes de servicio
 model ServiciosEnOrdenes {
   idAsignacion String @id @default(uuid())
+
+  // ID de la orden de servicio al que se asocia
   ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
   ordenServicioID String
+
+  // ID del servicio al que se asocia
   servicio Service @relation(fields:[servicioID], references: [id])
   servicioID String
+
   assignedAt DateTime @default(now())
+
 
   @@index([ordenServicioID])
   @@index([servicioID])
 }
 
+// Muchos productos pueden estar en muchas ordenes de servicio
 model ProductosEnOrdenes {
   idAsignacion String @id @default(uuid())
+
+  // ID de la orden de servicio al que se asocia
   ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id])
   ordenServicioID String
+
+  // ID del producto al que se asocia
   producto Product @relation(fields:[productoID], references: [id])
   productoID String
+
   assignedAt DateTime @default(now())
+
+  cantidad Int
 
   @@index([ordenServicioID])
   @@index([productoID])

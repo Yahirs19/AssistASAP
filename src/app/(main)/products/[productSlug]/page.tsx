@@ -1,4 +1,4 @@
-import { buscarProductoSlug } from "@/lib/queries/mostrarProducto";
+import { buscarProductoSlug } from "@/utils/productsQueries/mostrarProducto";
 import {
   CheckIcon,
   StarIcon,
