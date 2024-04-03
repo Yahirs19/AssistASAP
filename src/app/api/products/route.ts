@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { checkTypeOfUser } from "@/utils/checkTypeOfUser";
 import { NextResponse } from "next/server";
 
 export async function productsAPI(req: Request){
@@ -13,63 +14,75 @@ export async function productsAPI(req: Request){
             return new NextResponse("Unathorized", {status:401});
         }
 
-        // Checa que el request que se recibio, fue de POST
-        if(req.method === "POST")
-        {
-            const {name, imageUrl, price, slug, description} = await req.json();
 
-            const product = await db.product.create({
-                data:{
-                    mechanicId: profile.id,
-                    name,
-                    imageUrl,
-                    price, 
-                    slug,
-                    description
-                }
-            });
+        const typeOfUser = await checkTypeOfUser(profile);
 
-            // Se retorna el objeto creado, para su manejo en el frontend
-            return NextResponse.json(product);
-
+        if(!typeOfUser) {
+            return new NextResponse("User does not have a type", {status: 400});
         }
 
-        // Checa que el request que se recibio, fue de PUT
-        if(req.method === "PUT")
-        {
-            const { id } = await req.json();
+        // Checa que el usuario que interactua con el endpoint es un mecanico
+        if(typeOfUser === "MECANICO") {
+
+            // Checa que el request que se recibio, fue de POST
+            if(req.method === "POST")
+            {
+                const {name, imageUrl, price, slug, description} = await req.json();
+
+                const product = await db.product.create({
+                    data:{
+                        mechanicId: profile.id,
+                        name,
+                        imageUrl,
+                        price, 
+                        slug,
+                        description
+                    }
+                });
+                // Se retorna el objeto creado, para su manejo en el frontend
+                return NextResponse.json(product);
+                
+            }
+
+            // Checa que el request que se recibio, fue de PUT
+            if(req.method === "PUT")
+            {
+                const { id } = await req.json();
+                
+                const product = await db.product.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                        
+                    }
+                });
+
+                // Se retorna el objeto creado, para su manejo en el frontend
+                return NextResponse.json(product);
+
+            }
             
-            const product = await db.product.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    
-                }
-            });
+            // Checa que el request que se recibio, fue de DELETE
+            if(req.method === "DELETE") {
+                const { id } = await req.json();
 
-            // Se retorna el objeto creado, para su manejo en el frontend
-            return NextResponse.json(product);
+                const product = await db.product.delete({
+                    where:{
+                        id: id
+                    }
+                });
 
+                // Se retorna el objeto creado, para su manejo en el frontend
+                return NextResponse.json(product);
+            }
+
+            // Si no  se envió un tipo de Request válido, retorna un código de error
+            return new NextResponse("Invalid Method", {status: 405});
         }
+
+        return new NextResponse("Invalid Input", {status: 400});
         
-        // Checa que el request que se recibio, fue de DELETE
-        if(req.method === "DELETE") {
-            const { id } = await req.json();
-
-            const product = await db.product.delete({
-                where:{
-                    id: id
-                }
-            });
-
-            // Se retorna el objeto creado, para su manejo en el frontend
-            return NextResponse.json(product);
-        }
-
-        // Si no  se envió un tipo de Request válido, retorna un código de error
-        return new NextResponse("Invalid Method", {status: 405});
-
     }catch (error) {
         // En caso de error, se retorna una respuesta con un código de error del servidor
         console.log("[SERVER_POST]", error);

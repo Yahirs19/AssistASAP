@@ -2,12 +2,21 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+import { checkTypeOfUser } from "@/utils/checkTypeOfUser";
+
 export async function typeOfUserAPI(req: Request){
     try{
         const profile = await currentProfile();
 
         if(!profile){
             return new NextResponse("Unathorized", {status:401});
+        }
+
+        const typeOfUser = await checkTypeOfUser(profile);
+
+        // Evita que los usuarios que ya tengan un tipo asignado, entren a este endpoint
+        if(typeOfUser) {
+            return new NextResponse("User already have a type", {status: 400});
         }
 
         if(req.method === "POST")
@@ -37,11 +46,11 @@ export async function typeOfUserAPI(req: Request){
                 return NextResponse.json(mechanicProfile);
             }
 
-            return new NextResponse("Invalid Input", {status: 400})
+            return new NextResponse("Invalid Input", {status: 400});
 
         }
 
-        return new NextResponse("Invalid Method", {status: 405})
+        return new NextResponse("Invalid Method", {status: 405});
 
     }catch (error) {
         console.log("[SERVER_POST]", error);

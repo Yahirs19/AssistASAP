@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs";
 
 import {db} from "@/lib/db";
 
-export const checkTypeOfUser = async () => {
+export const hasTypeOfUser = async () => {
     const user = await currentUser();
 
     // Si no hay un usuario autenticado, no realiza la función
@@ -29,7 +29,7 @@ export const checkTypeOfUser = async () => {
             where: {
                 profileId: profile.id
             }
-        })
+        });
 
         if(mechanicProfile && !clientProfile) {       
             return true;

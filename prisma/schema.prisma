@@ -38,9 +38,12 @@ model Profile{
 model Client {
   id String @id @default(uuid())
 
+  // Un cliente puede pedir varias ordenes de servicio
+  ordenesDeServicio OrdenServicio[]
+
   // Un cliente, forzosamente tiene un perfil
   profileId String @unique
-  profile Profile @relation(fields:[profileId], references: [id])
+  profile Profile @relation(fields:[profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Mechanic {
@@ -48,12 +51,17 @@ model Mechanic {
 
   // Un mecanico, forzosamente tiene un perfil
   profileId String @unique
-  profile Profile @relation(fields:[profileId], references: [id])
+  profile Profile @relation(fields:[profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  // Un mecánico puede tener muchos productos
+  // Un mecánico puede tener muchos productos y servicios
   products Product[]
-
   services Service[]
+
+  // Un mecánico puede estar o tener, muchos establecimientos
+  establecimientos Establecimiento[]
+
+  // Un mecánico puede atender muchas ordenes de servicio
+  ordenesServicio OrdenServicio[]
 }
 
 // Tabla Product, donde se guardarán los productos que se van a vender
@@ -66,12 +74,12 @@ model Product{
   description String
     
   // Un producto, puede estar en muchas ordenes de servicio
-  ordenesServicio ProductosEnOrdenes[]
+  ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
   
 
   // Quien es el propietario del producto
-  mechanicId String @default("TEST")
-  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade)
+  mechanicId String
+  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([mechanicId])
 }
@@ -85,13 +93,13 @@ model Service {
   description String
 
   // Un servicio, puede estar en muchas ordenes de servicio
-  ordenesServicio ServiciosEnOrdenes[]
+  ordenesServicio ServiciosEnOrdenes[] @relation(name: "Ordenes")
     
   
 
-  // Quien es el propietario del producto
+  // Quien es el propietario del servicio
   mechanicId String
-  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade)
+  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
 
   @@index([mechanicId])
@@ -111,22 +119,33 @@ model OrdenServicio {
   total Decimal @db.Decimal(10,2) @default(0.0)
 
   // Ver que servicios están asociados a esta orden de servicio
-  servicios ServiciosEnOrdenes[]
+  servicios ServiciosEnOrdenes[] @relation(name: "Servicios")
 
   // Ver que productos están asociados a esta orden de servicio
-  productos ProductosEnOrdenes[]
+  productos ProductosEnOrdenes[] @relation(name: "Productos")
 
+
+  // Una orden de servicio, fue creada forzosamente por un cliente
+  clienteID String
+  cliente Client @relation(fields: [clienteID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Una orden de servicio, puede ser atentida por un mecánico
+  mecanicoID String?
+  mecanico Mechanic? @relation(fields: [mecanicoID], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([clienteID])
+  @@index([mecanicoID])
 }
 
 // Tabla que sirve para indicar que muchos servicios están en muchas ordenes de servicio
 model ServiciosEnOrdenes {
   // ID de la orden de servicio al que se asocia
   // Si se elimina la orden de servicio a la que esta asociada, se elimina esta asignacion
-  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade, name:"Servicios")
   ordenServicioID String
 
   // ID del servicio al que se asocia
-  servicio Service @relation(fields:[servicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
+  servicio Service @relation(fields:[servicioID], references: [id], onDelete: Cascade, onUpdate:Cascade, name: "Ordenes")
   servicioID String
 
   assignedAt DateTime @default(now())
@@ -141,11 +160,11 @@ model ServiciosEnOrdenes {
 model ProductosEnOrdenes {
   // ID de la orden de servicio al que se asocia
   // Si se elimina la orden de servicio a la que esta asociada, se elimina esta asignacion
-  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade)
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioID], references: [id], onDelete: Cascade, onUpdate:Cascade, name:"Productos")
   ordenServicioID String
 
   // ID del producto al que se asocia
-  producto Product @relation(fields:[productoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  producto Product @relation(fields:[productoID], references: [id], onDelete: Cascade, onUpdate: Cascade, name: "Ordenes")
   productoID String
 
   assignedAt DateTime @default(now())
@@ -155,4 +174,18 @@ model ProductosEnOrdenes {
   @@id(name: "IDAsignacion", [ordenServicioID, productoID])
   @@index([productoID])
   @@index([ordenServicioID])
+}
+
+// Tabla de establecimientos
+model Establecimiento {
+  id String @id @default(uuid())
+  nombre String
+  latitude String
+  longitude String
+
+  // Un establecimiento puede pertenecer a un mecánico
+  mecanicoID String?
+  mecanico Mechanic? @relation(fields: [mecanicoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([mecanicoID])
 }
