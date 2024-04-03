@@ -15,6 +15,7 @@ export async function typeOfUserAPI(req: Request){
             // Haz uso del typeOfUser que esta en types.d.ts
             const {typeOfUser} = await req.json();
 
+            // Se crea perfil de un cliente
             if(typeOfUser === "CLIENTE") {
                 const clientProfile = await db.client.create({
                     data: {
@@ -25,6 +26,7 @@ export async function typeOfUserAPI(req: Request){
                 return NextResponse.json(clientProfile);
             }
 
+            // Se crea perfil de un mecanico
             if(typeOfUser === "MECANICO"){
                 const mechanicProfile = await db.mechanic.create({
                     data: {
