@@ -27,7 +27,7 @@ export async function servicesAPI(req: Request){
             // Checa que el request que se recibio, fue de POST
             if(req.method === "POST")
             {
-                const {name, imageUrl, price, slug, description} = await req.json();
+                const {name, imageUrl, price, slug, description, tipo} = await req.json();
     
                 const service = await db.service.create({
                     data:{
@@ -36,7 +36,8 @@ export async function servicesAPI(req: Request){
                         imageUrl,
                         price, 
                         slug,
-                        description
+                        description,
+                        tipo
                     }
                 });
     

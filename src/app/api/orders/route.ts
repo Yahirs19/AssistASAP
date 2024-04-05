@@ -30,7 +30,7 @@ export async function ordersAPI(req: Request){
                 Estas variables que se reciben, no son las oficiales, solo es para dar una 
                 idea como pueden funcionar los endpoints
                 */
-                const { ordenData, producto, servicio, cantidad, servicios, productos } = await req.json();
+                const { ordenData, producto, servicio, cantidad, servicios, productos, tipo} = await req.json();
     
                 // En caso de que se cree una orden de servicio, a partir de que se elija uno o más servicios primero
                 if(servicios && !productos) {
@@ -38,14 +38,15 @@ export async function ordersAPI(req: Request){
                         data:{
                             servicios: {
                                 createMany:{
-                                    data: servicios // En este caso, servicios deberia ser un arreglo de objetos de productos
+                                    data: servicios, // En este caso, servicios deberia ser un arreglo de objetos de productos                                   
                                 }
                             },
                             cliente: {
                                 connect: {
                                     profileId: profile.id
                                 }
-                            }           
+                            },
+                            tipo: tipo           
                         }
                     });
     
@@ -65,7 +66,8 @@ export async function ordersAPI(req: Request){
                                 connect: {
                                     profileId: profile.id
                                 }
-                            }
+                            },
+                            tipo:tipo
                         }
                     });
     
@@ -90,7 +92,8 @@ export async function ordersAPI(req: Request){
                                 connect: {
                                     profileId: profile.id
                                 }
-                            }
+                            },
+                            tipo: tipo
                         }
                     });
     
@@ -122,18 +125,18 @@ export async function ordersAPI(req: Request){
                     return NextResponse.json(newServiceInOrder);
                 }
     
-                // Crear una orden de servicio vacía, a la espera de que el usuario elija los servicios y productos que quiera
-                const newOrder = await db.ordenServicio.create({
-                    data: {
-                        cliente: {
-                            connect: {
-                                profileId: profile.id
-                            }
-                        }
-                    }
-                });
+                // // Crear una orden de servicio vacía, a la espera de que el usuario elija los servicios y productos que quiera
+                // const newOrder = await db.ordenServicio.create({
+                //     data: {
+                //         cliente: {
+                //             connect: {
+                //                 profileId: profile.id
+                //             }
+                //         }
+                //     }
+                // });
     
-                return NextResponse.json(newOrder);
+                // return NextResponse.json(newOrder);
             }
     
             // Checa que el request que se recibio, fue de PUT

@@ -57,8 +57,11 @@ model Mechanic {
   products Product[]
   services Service[]
 
-  // Un mecánico puede estar o tener, muchos establecimientos
-  establecimientos Establecimiento[]
+  // Un mecánico puede ser dueño de varios establecimientos
+  establecimientos Establecimiento[] @relation("Dueño")
+
+  // Un mecánico puede ser miembro de otro establecimiento, pero uno a la vez, y solo si no es dueño de otros establecimientos
+  establecimiento MecanicoEnEstablecimento?
 
   // Un mecánico puede atender muchas ordenes de servicio
   ordenesServicio OrdenServicio[]
@@ -150,13 +153,9 @@ model OrdenServicio {
   mecanicoID String?
   mecanico Mechanic? @relation(fields: [mecanicoID], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  // Una orden de servicio, puede estar relacionada aun establecimiento
-  establecimientoID String?
-  establecimiento Establecimiento? @relation(fields: [establecimientoID], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([clienteID])
   @@index([mecanicoID])
-  @@index([establecimientoID])
 }
 
 // Tabla que sirve para indicar que muchos servicios están en muchas ordenes de servicio
@@ -207,9 +206,23 @@ model Establecimiento {
 
   // Un establecimiento pertenece a un mecánico
   mecanicoID String
-  mecanico Mechanic @relation(fields: [mecanicoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mecanico Mechanic @relation(fields: [mecanicoID], references: [id], name: "Dueño", onDelete: Cascade, onUpdate: Cascade)
 
-  ordenes OrdenServicio[]
+  // Un establecimiento puede tener muchos mecanicos en el
+  mecanicos MecanicoEnEstablecimento[]
+  
 
   @@index([mecanicoID])
+}
+
+// Un mecánico puede unirse a otro establecimiento, si el dueño lo admite o agrega
+// Aquí solo se agregan como miembros, a los mecánicos que se unan a otros establecimiento, donde no sean los dueños de éste
+model MecanicoEnEstablecimento {
+  mecanicoID String @unique
+  mecanico Mechanic @relation(fields: [mecanicoID], references: [id])
+  establecimientoID String
+  establecimiento Establecimiento @relation(fields: [establecimientoID], references: [id])
+
+  @@id([mecanicoID, establecimientoID])
+  @@index([establecimientoID])
 }
