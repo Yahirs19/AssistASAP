@@ -84,6 +84,12 @@ model Product{
   @@index([mechanicId])
 }
 
+enum TipoServicio {
+  DOMICILIO
+  ESTABLECIMIENTO
+  AMBOS
+}
+
 model Service {
   id String @id @default(uuid())
   name String
@@ -91,6 +97,7 @@ model Service {
   price Decimal @db.Decimal(8,2)
   slug String
   description String
+  tipo TipoServicio // Un servicio puede entregarse solo a domicilio, solo en un establecimiento o ambos
 
   // Un servicio, puede estar en muchas ordenes de servicio
   ordenesServicio ServiciosEnOrdenes[] @relation(name: "Ordenes")
@@ -111,11 +118,21 @@ enum EstadoOrdenServicio {
   COMPLETADO
 }
 
+enum TipoOrdenServicio {
+  DOMICILIO
+  ESTABLECIMIENTO
+}
+
 // Tabla de las ordenes de servicio
+
+// Las ubicaciones de los dos individuos que interactúan en la orden, se manejan solo en el front, dependiendo del tipo que tiene el servicio en la base de datos
+// Si la orden es a domicilio, en el front checará la ubicación del mecánico y la enrutará a la ubicación del cliente
+// Si la orden es para recoger o atender en un establecimiento, se marca la ruta entre la ubicación del cliente y el establecimiento seleccionado
 model OrdenServicio {
   id String @id @default(uuid())
   fecha DateTime @default(now())
   estado EstadoOrdenServicio @default(PENDIENTE)
+  tipo TipoOrdenServicio
   total Decimal @db.Decimal(10,2) @default(0.0)
 
   // Ver que servicios están asociados a esta orden de servicio
@@ -133,8 +150,13 @@ model OrdenServicio {
   mecanicoID String?
   mecanico Mechanic? @relation(fields: [mecanicoID], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
+  // Una orden de servicio, puede estar relacionada aun establecimiento
+  establecimientoID String?
+  establecimiento Establecimiento? @relation(fields: [establecimientoID], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
   @@index([clienteID])
   @@index([mecanicoID])
+  @@index([establecimientoID])
 }
 
 // Tabla que sirve para indicar que muchos servicios están en muchas ordenes de servicio
@@ -183,9 +205,11 @@ model Establecimiento {
   latitude String
   longitude String
 
-  // Un establecimiento puede pertenecer a un mecánico
-  mecanicoID String?
-  mecanico Mechanic? @relation(fields: [mecanicoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // Un establecimiento pertenece a un mecánico
+  mecanicoID String
+  mecanico Mechanic @relation(fields: [mecanicoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  ordenes OrdenServicio[]
 
   @@index([mecanicoID])
 }

@@ -30,15 +30,15 @@ export async function ordersAPI(req: Request){
                 Estas variables que se reciben, no son las oficiales, solo es para dar una 
                 idea como pueden funcionar los endpoints
                 */
-                const { data, servicio, producto, cantidad } = await req.json();
+                const { ordenData, producto, servicio, cantidad, servicios, productos } = await req.json();
     
-                // En caso de que se cree una orden de servicio, a partir de que se elija algún servicio primero
-                if(servicio) {
+                // En caso de que se cree una orden de servicio, a partir de que se elija uno o más servicios primero
+                if(servicios && !productos) {
                     const newOrderWithService = await db.ordenServicio.create({
                         data:{
                             servicios: {
-                                create:{
-                                    servicioID: servicio.id
+                                createMany:{
+                                    data: servicios // En este caso, servicios deberia ser un arreglo de objetos de productos
                                 }
                             },
                             cliente: {
@@ -52,14 +52,38 @@ export async function ordersAPI(req: Request){
                     return NextResponse.json(newOrderWithService);
                 }
     
-                // En caso de que se cree una orden de servicio, a partir de que se elija algún producto y se quiera pedir de inmediato 
-                if(producto){
+                // En caso de que se cree una orden de servicio, a partir de que se elija uno o más productos primero
+                if(productos && !servicios){
                     const newOrderWithProduct = await db.ordenServicio.create({
                         data: {
                             productos: {
-                                create: {
-                                    productoID: producto.id,
-                                    cantidad: cantidad
+                                createMany: {
+                                    data: productos // En este caso, productos deberia ser un arreglo de objetos de productos
+                            }
+                            },
+                            cliente: {
+                                connect: {
+                                    profileId: profile.id
+                                }
+                            }
+                        }
+                    });
+    
+                    return NextResponse.json(newOrderWithProduct);
+                }
+
+                // En caso de que se cree una orden de servicio, a partir de la seleccion de servicios y productos
+                if(productos && servicios){
+                    const newOrderWithProduct = await db.ordenServicio.create({
+                        data: {
+                            productos: {
+                                createMany: {
+                                    data: productos // En este caso, productos deberia ser un arreglo de objetos de productos
+                            }
+                            },
+                            servicios: {
+                                createMany: {
+                                    data: servicios
                                 }
                             },
                             cliente: {
@@ -71,6 +95,31 @@ export async function ordersAPI(req: Request){
                     });
     
                     return NextResponse.json(newOrderWithProduct);
+                }
+
+                // Agregar un producto a una orden de existente
+                if(!ordenData && producto){
+                    const newProductInOrder = await db.productosEnOrdenes.create({
+                        data: {
+                            productoID: producto.id,
+                            ordenServicioID: ordenData.id,
+                            cantidad: cantidad
+                        }
+                    });
+
+                    return NextResponse.json(newProductInOrder);
+                }
+
+                // Agregar un servicio a una orden de servicio existente
+                if(!ordenData && servicio){
+                    const newServiceInOrder = await db.serviciosEnOrdenes.create({
+                        data: {
+                            servicioID: servicio.id,
+                            ordenServicioID: ordenData.id,
+                        }
+                    });
+
+                    return NextResponse.json(newServiceInOrder);
                 }
     
                 // Crear una orden de servicio vacía, a la espera de que el usuario elija los servicios y productos que quiera
@@ -96,7 +145,7 @@ export async function ordersAPI(req: Request){
                 */
                 const { data, producto, cantidad, ordenID } = await req.json();
     
-                // Solo se pueden editar la cantidad de un producto en una orden de servicio
+                // Se pueden editar la cantidad de un producto en una orden de servicio
                 if(producto){
                     const newOrderWithProduct = await db.productosEnOrdenes.update({
                         where: {
@@ -113,7 +162,6 @@ export async function ordersAPI(req: Request){
                     return NextResponse.json(newOrderWithProduct);
                 }
     
-                // Se retorna el objeto creado, para su manejo en el frontend
                 return new NextResponse("Invalid Input", {status: 400});
             }
     
