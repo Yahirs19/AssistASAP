@@ -53,9 +53,6 @@ model Mechanic {
   profileId String @unique
   profile Profile @relation(fields:[profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  // Un mecánico puede tener muchos productos y servicios
-  products Product[]
-  services Service[]
 
   // Un mecánico puede ser dueño de varios establecimientos
   establecimientos Establecimiento[] @relation("Dueño")
@@ -80,11 +77,11 @@ model Product{
   ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
   
 
-  // Quien es el propietario del producto
-  mechanicId String
-  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  // En qué establecimiento se ofrece
+  establecimientoID String?
+  establecimiento Establecimiento? @relation(fields: [establecimientoID], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
-  @@index([mechanicId])
+  @@index([establecimientoID])
 }
 
 enum TipoServicio {
@@ -107,12 +104,12 @@ model Service {
     
   
 
-  // Quien es el propietario del servicio
-  mechanicId String
-  mechanic Mechanic @relation(fields: [mechanicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // En qué establecimiento se ofrece
+  establecimientoID String
+  establecimiento Establecimiento @relation(fields: [establecimientoID], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
 
-  @@index([mechanicId])
+  @@index([establecimientoID])
 }
 
 enum EstadoOrdenServicio {
@@ -203,6 +200,7 @@ model Establecimiento {
   nombre String
   latitude String
   longitude String
+  imagenUrl String @db.Text
 
   // Un establecimiento pertenece a un mecánico
   mecanicoID String
@@ -210,7 +208,10 @@ model Establecimiento {
 
   // Un establecimiento puede tener muchos mecanicos en el
   mecanicos MecanicoEnEstablecimento[]
-  
+
+  // En un establecimiento, se pueden ofrecer muchos productos y servicios
+  products Product[]
+  services Service[]
 
   @@index([mecanicoID])
 }

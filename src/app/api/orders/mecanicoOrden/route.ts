@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { checkTypeOfUser } from "@/utils/checkTypeOfUser";
 import { NextResponse } from "next/server";
 
-export async function establecimientosAPI(req: Request){
+export async function mecanicoOrdenAPI(req: Request){
     try{
         // Checamos si hay un perfil de usuario
         const profile = await currentProfile();
@@ -18,19 +18,22 @@ export async function establecimientosAPI(req: Request){
         if(!typeOfUser) {
             return new NextResponse("User does not have a type", {status: 400});
         }
-
+        
+        // Un mecanico debe de atender una orden de servicio
         if(typeOfUser === "MECANICO"){
 
             if(req.method === "POST")
             {
                 // Obtenemos los datos a insertar en la base de datos
-                const {mecanicoID, establecimientoID} = await req.json();         
+                const {ordenServicioID, mecanicoID} = await req.json();         
 
                 
-                const establishment = await db.mecanicoEnEstablecimento.create({
+                const establishment = await db.ordenServicio.update({
+                    where: {
+                        id: ordenServicioID
+                    },
                     data: {
                         mecanicoID: mecanicoID,
-                        establecimientoID: establecimientoID
                     }
                 });
 
@@ -40,13 +43,15 @@ export async function establecimientosAPI(req: Request){
 
             if(req.method === "DELETE"){
                 // Obtenemos los datos a insertar en la base de datos
-                const {mecanicoID, establecimientoID} = await req.json();         
+                const {ordenServicioID} = await req.json();         
 
                 
-                const establishment = await db.mecanicoEnEstablecimento.delete({
+                const establishment = await db.ordenServicio.update({
                     where: {
-                        mecanicoID: mecanicoID,
-                        establecimientoID: establecimientoID
+                        id: ordenServicioID
+                    },
+                    data: {
+                        mecanicoID: null
                     }
                 });
 

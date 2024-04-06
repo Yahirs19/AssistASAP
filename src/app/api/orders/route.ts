@@ -125,18 +125,7 @@ export async function ordersAPI(req: Request){
                     return NextResponse.json(newServiceInOrder);
                 }
     
-                // // Crear una orden de servicio vacía, a la espera de que el usuario elija los servicios y productos que quiera
-                // const newOrder = await db.ordenServicio.create({
-                //     data: {
-                //         cliente: {
-                //             connect: {
-                //                 profileId: profile.id
-                //             }
-                //         }
-                //     }
-                // });
-    
-                // return NextResponse.json(newOrder);
+                
             }
     
             // Checa que el request que se recibio, fue de PUT

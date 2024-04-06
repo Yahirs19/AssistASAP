@@ -27,11 +27,11 @@ export async function productsAPI(req: Request){
             // Checa que el request que se recibio, fue de POST
             if(req.method === "POST")
             {
-                const {name, imageUrl, price, slug, description} = await req.json();
+                const {name, imageUrl, price, slug, description, establecimientoID} = await req.json();
 
                 const product = await db.product.create({
                     data:{
-                        mechanicId: profile.id,
+                        establecimientoID: establecimientoID,
                         name,
                         imageUrl,
                         price, 
