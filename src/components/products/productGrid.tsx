@@ -5,8 +5,7 @@ type Product = {
   slug: string;
   name: string;
   description: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageUrl: string;
   price: string;
 };
 

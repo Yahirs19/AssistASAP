@@ -1,5 +1,5 @@
 import Banner from "../../components/banner";
-import TestProduct from "../../components/products/ProductComponent";
+import TestProduct from "../../components/products/mainPageProducts/ProductComponent";
 import Link from "next/link";
 
 import { initialProfile } from "@/lib/initial-profile";
@@ -7,26 +7,7 @@ import { hasTypeOfUser } from "@/utils/typeOfUser";
 
 export default async function Home() {
   // Obtenemos el perfil del usuario
-  const profile = await initialProfile()
-  
-  // Función para checar si el usuario es forzosamente un cliente, o un mecánico
-  const typeOfUser = await hasTypeOfUser();
-
-  /*
-   Se renderiza componente si el usuario tiene un perfil registrado, 
-   pero no tiene un tipo de usuario asignado 
-  */
-  if(profile && !typeOfUser) { 
-    return (
-      <>
-        {
-        /* Se renderiza componente para que el usuario 
-          indique si se va a registrar como un cliente o un mecánico
-        */
-        }
-      </>
-    )
-  }
+  const profile = await initialProfile();
 
   return (
     <>

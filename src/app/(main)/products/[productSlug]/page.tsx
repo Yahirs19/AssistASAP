@@ -1,10 +1,11 @@
-import { buscarProductoSlug } from "@/utils/productsQueries/mostrarProducto";
+import { buscarProductoSlug } from "@/lib/queries/productQueries";
 import {
   CheckIcon,
   StarIcon,
   ChevronLeftIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 /*const product = {
   id: 1,
@@ -24,6 +25,9 @@ const reviews = { average: 4, totalCount: 1624 };
 export default async function Example({ params }: { params: RouteParams }) {
   const product = await buscarProductoSlug(params.productSlug);
 
+  if (!product) {
+    notFound();
+  }
   return (
     <div className="bg-white">
       <Link href="/products" className="">
@@ -92,8 +96,8 @@ export default async function Example({ params }: { params: RouteParams }) {
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
           <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
             <img
-              src={product.imageSrc}
-              alt={product.imageAlt}
+              src={product.imageUrl}
+              alt={product.name}
               className="h-full w-full object-cover object-center"
             />
           </div>

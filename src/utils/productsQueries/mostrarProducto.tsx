@@ -13,3 +13,7 @@ export async function buscarProductoSlug(slug: string) {
 
   return productoEncontrado;
 }
+
+export async function mostrarProducto() {
+  return await prisma.product.findMany();
+}
