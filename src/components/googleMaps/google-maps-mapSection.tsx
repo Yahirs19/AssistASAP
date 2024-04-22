@@ -24,8 +24,8 @@ const GoogleMapsMapSection = () => {
         
       // Indicamos desde en qué localización aparecerá el mapa
       const [center, setCenter] = useState({
-          lat: -3.745,
-          lng: -38.523
+          lat: 32.5299265,
+          lng: -116.9896755
       });
 
       // Checamos estado de carga del mapa de Google Maps
@@ -95,8 +95,8 @@ const GoogleMapsMapSection = () => {
         caso es en carro (DRIVING)
         */
         DirectionsService.route({
-          origin:{lat:source.lat, lng:source.lng},
-          destination:{lat:destination.lat, lng:destination.lng},
+          origin:{lat:source?.lat, lng:source?.lng},
+          destination:{lat:destination?.lat, lng:destination?.lng},
           travelMode: google.maps.TravelMode.DRIVING
         }, (result, status) => {
           // Checamos que todo haya salido correctamente, y se lo asignamos al estado que guarda la ruta

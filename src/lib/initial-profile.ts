@@ -9,7 +9,7 @@ export const initialProfile = async () => {
     // Checamos si es que hay un usuario con la sesión iniciada, si no, vamos a la pantalla de Login
     if(!user){
         // No retorna nada si no hay un usuario
-        return;
+        return null;
     }
 
     // console.log(user)
@@ -23,7 +23,7 @@ export const initialProfile = async () => {
 
     // Si no es un usuario nuevo, y tiene un perfil, lo regresamos
     if(profile){
-        return profile
+        return profile;
     }
 
 

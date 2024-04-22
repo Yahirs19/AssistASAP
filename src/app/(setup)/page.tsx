@@ -7,7 +7,7 @@ import { hasTypeOfUser } from "@/utils/typeOfUser";
 
 export default async function Home() {
   // Obtenemos el perfil del usuario
-  const profile = await initialProfile();
+  // const profile = await initialProfile();
 
   return (
     <>
