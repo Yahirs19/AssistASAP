@@ -14,29 +14,39 @@ import { type Point } from "@/types/googleTypes";
 import { LoadScript } from "@react-google-maps/api";
 import { useAuth } from "@clerk/nextjs";
 
+import getUserName from "@/utils/servicesQueries/getUserName";
+
 export default function GoogleMapsInterface(){
     // Manejo de estados, que manejan los valores de los inputs para el desplegar los puntos y la ruta en el mapa
     const [source, setSource] = useState<Point | undefined>();
     const [destination, setDestination] = useState<Point | undefined>();
+    const [Name, setUserName] = useState<string>();
 
     const user = useAuth();
-    
+
 
     useEffect(() => {
+
         const channel = supabase.channel("room1");
 
-        channel
-            .on("presence", {event:"sync"}, () => {
-                console.log("Synced presence state: ", channel.presenceState());
-            })
-            .subscribe(async (status) => {
-                if(status==="SUBSCRIBED") {
-                    await channel.track({
-                        online_at: new Date().toISOString(), 
-                        user_id: user.userId
-                    })
-                }
-            })
+        if(user.userId){
+            getUserName(user.userId).then(function(value){
+                setUserName(value?.name)});
+        
+
+            channel
+                .on("presence", {event:"sync"}, () => {
+                    console.log("Synced presence state: ", channel.presenceState());
+                })
+                .subscribe(async (status) => {
+                    if(status==="SUBSCRIBED" && user.userId) {
+                        await channel.track({
+                            online_at: new Date().toISOString(), 
+                            user_name: Name
+                        })
+                    }
+                })
+        }
 
         return () => {
             channel.unsubscribe();
@@ -44,9 +54,6 @@ export default function GoogleMapsInterface(){
 
     }, [user]);
 
-
-    
-    console.log("Test");
 
     return(
         <SourceContext.Provider value={{source, setSource}}>
