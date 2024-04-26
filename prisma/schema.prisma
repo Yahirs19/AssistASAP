@@ -31,6 +31,9 @@ model Profile{
   mechanic Mechanic?
   client Client?
 
+  // Un usuario puede ser admin (ESTO SOLO SE ASIGNA DIRECTAMENTE EN EL SUPABASE)
+  admin Admin?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -64,6 +67,19 @@ model Mechanic {
   ordenesServicio OrdenServicio[]
 }
 
+
+model Admin {
+  id String @id @default(uuid())
+
+  // Los admins de la app tienen un perfil registrado
+  profileId String @unique
+  profile Profile @relation(fields:[profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Un admin puede publicar muchos productos
+  productos Product[]
+
+}
+
 // Tabla Product, donde se guardarán los productos que se van a vender
 model Product{
   id String @id @default(uuid())
@@ -77,11 +93,11 @@ model Product{
   ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
   
 
-  // En qué establecimiento se ofrece
-  establecimientoID String?
-  establecimiento Establecimiento? @relation(fields: [establecimientoID], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  // Cuál administrador lo publicó
+  usuarioAdminID String?
+  usuarioAdmin Admin? @relation(fields: [usuarioAdminID], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
-  @@index([establecimientoID])
+  @@index([usuarioAdminID])
 }
 
 enum TipoServicio {
@@ -209,8 +225,7 @@ model Establecimiento {
   // Un establecimiento puede tener muchos mecanicos en el
   mecanicos MecanicoEnEstablecimento[]
 
-  // En un establecimiento, se pueden ofrecer muchos productos y servicios
-  products Product[]
+  // En un establecimiento, se pueden ofrecer muchos servicios
   services Service[]
 
   @@index([mecanicoID])
