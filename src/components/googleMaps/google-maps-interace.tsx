@@ -30,13 +30,18 @@ export default function GoogleMapsInterface(){
         const channel = supabase.channel("room1");
 
         if(user.userId){
-            getUserName(user.userId).then(function(value){
-                setUserName(value?.name)});
+            const getName = async () => {
+                const fetchedName = await getUserName(user.userId);
+                setUserName(fetchedName?.name);
+            };
+
+            getName();
         
 
             channel
                 .on("presence", {event:"sync"}, () => {
                     console.log("Synced presence state: ", channel.presenceState());
+                    console.log("Usuario: " + Name);
                 })
                 .subscribe(async (status) => {
                     if(status==="SUBSCRIBED" && user.userId) {
