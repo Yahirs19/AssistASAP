@@ -1,1 +1,1 @@
-export type TypeUser = "CLIENTE" | "MECANICO";
+export type TypeUser = "CLIENTE" | "MECANICO" | "ADMIN";

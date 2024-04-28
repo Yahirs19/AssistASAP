@@ -1,19 +1,15 @@
 import { currentUser } from "@clerk/nextjs";
+import { type TypeUser } from "@/types/types";
 
 import {db} from "@/lib/db";
 
-export const hasTypeOfUser = async () => {
-    const user = await currentUser();
-
-    // Si no hay un usuario autenticado, no realiza la función
-    if(!user) {
-        return;
-    }
+export const checkTypeOfUser = async (id: string): Promise<TypeUser | null> => {
+    
 
     // Checamos si el usuario tiene un perfil registrado
     const profile = await db.profile.findUnique({
         where: {
-            userId: user.id
+            userId: id
         }
     });
 
@@ -31,16 +27,26 @@ export const hasTypeOfUser = async () => {
             }
         });
 
-        if(mechanicProfile && !clientProfile) {       
-            return true;
+        const adminProfile = await db.admin.findUnique({
+            where: {
+                profileId: profile.id
+            }
+        });
+
+        if(adminProfile){
+            return "ADMIN";
         }
 
-        if(!mechanicProfile && clientProfile) {
-            return true;
+        if(mechanicProfile) {       
+            return "MECANICO";
         }
 
-        return false;
+        if(clientProfile) {
+            return "CLIENTE";
+        }
+
+        return null;
     }
 
-    return false;
+    return null;
 }

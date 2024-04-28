@@ -3,11 +3,11 @@ import TestProduct from "../../components/products/mainPageProducts/ProductCompo
 import Link from "next/link";
 
 import { initialProfile } from "@/lib/initial-profile";
-import { hasTypeOfUser } from "@/utils/typeOfUser";
+import { checkTypeOfUser } from "@/utils/typeOfUser";
 
 export default async function Home() {
   // Obtenemos el perfil del usuario
-  // const profile = await initialProfile();
+  const profile = await initialProfile();
 
   return (
     <>
