@@ -4,19 +4,57 @@ import GoogleMapsSearchInputs from "./google-maps-search";
 import GoogleMapsMapSection from "./google-maps-mapSection";
 
 import { SourceContext } from "@/contexts/sourceContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DestinationContext } from "@/contexts/destinationContext";
+
+import { supabase } from "@/lib/supabaseClient";
 
 import { type Point } from "@/types/googleTypes";
 
 import { LoadScript } from "@react-google-maps/api";
+import { useAuth } from "@clerk/nextjs";
 
-export default function GoogleMapsInteface(){
+import getUserName from "@/utils/servicesQueries/getUserName";
+
+export default function GoogleMapsInterface(){
     // Manejo de estados, que manejan los valores de los inputs para el desplegar los puntos y la ruta en el mapa
-    const [source, setSource] = useState<Point>();
-    const [destination, setDestination] = useState<Point>();
+    const [source, setSource] = useState<Point | undefined>();
+    const [destination, setDestination] = useState<Point | undefined>();
+    const [Name, setUserName] = useState<string>();
 
-    
+    const user = useAuth();
+
+
+    useEffect(() => {
+
+        const channel = supabase.channel("room1");
+
+        if(user.userId){
+            getUserName(user.userId).then(function(value){
+                setUserName(value?.name)});
+        
+
+            channel
+                .on("presence", {event:"sync"}, () => {
+                    console.log("Synced presence state: ", channel.presenceState());
+                })
+                .subscribe(async (status) => {
+                    if(status==="SUBSCRIBED" && user.userId) {
+                        await channel.track({
+                            online_at: new Date().toISOString(), 
+                            user_name: Name
+                        })
+                    }
+                })
+        }
+
+        return () => {
+            channel.unsubscribe();
+        };
+
+    }, [user]);
+
+
     return(
         <SourceContext.Provider value={{source, setSource}}>
             <DestinationContext.Provider value={{destination, setDestination}}>
@@ -36,5 +74,6 @@ export default function GoogleMapsInteface(){
                 </LoadScript>  
             </DestinationContext.Provider>
         </SourceContext.Provider>
-    )  
+    )
+    
 }
