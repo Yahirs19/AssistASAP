@@ -80,6 +80,14 @@ model Admin {
 
 }
 
+model Proveedor {
+  id String @id @default(uuid())
+  Nombre String
+  Foto String @db.Text
+
+  productos Product[]
+}
+
 // Tabla Product, donde se guardarán los productos que se van a vender
 model Product{
   id String @id @default(uuid())
@@ -88,16 +96,22 @@ model Product{
   price Decimal @db.Decimal(8,2)
   slug String
   description String
+  cantidad Int
     
   // Un producto, puede estar en muchas ordenes de servicio
   ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
   
 
   // Cuál administrador lo publicó
-  usuarioAdminID String?
-  usuarioAdmin Admin? @relation(fields: [usuarioAdminID], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  usuarioAdminID String
+  usuarioAdmin Admin @relation(fields: [usuarioAdminID], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  // De qué proveedor es
+  proveedorID String?
+  proveedor Proveedor? @relation(fields: [proveedorID], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([usuarioAdminID])
+  @@index([proveedorID])
 }
 
 enum TipoServicio {

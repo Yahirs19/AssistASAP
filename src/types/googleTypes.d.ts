@@ -7,3 +7,6 @@ type Point = {lat:number, lng:number, name?:string, label?:string};
 export type Source = {source: Point|undefined; setSource: React.Dispatch<React.SetStateAction<Point|undefined>>;} | null;
 
 export type Destination = {destination: Point|undefined; setDestination: React.Dispatch<React.SetStateAction<Point|undefined>>;} | null;
+
+
+export type Location = {location: Point|undefined; setLocation: React.Dispatch<React.SetStateAction<Point|undefined>>;} | null;

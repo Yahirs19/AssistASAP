@@ -1,22 +1,44 @@
+
+
 import { DirectionsRenderer, GoogleMap, MarkerF, OverlayView, useJsApiLoader } from '@react-google-maps/api';
 
 import { useState, useCallback, useContext, useEffect } from 'react';
 
+import { useAuth } from '@clerk/nextjs';
+
+import supabase from '@/lib/supabaseClient';
+
 import { SourceContext } from '@/contexts/sourceContext';
 import { DestinationContext } from '@/contexts/destinationContext';
+import { LocationContext } from '@/contexts/locationContext';
+
+import { type Point } from '@/types/googleTypes';
+
+import { type UsuarioOrden } from '@/types/types';
+
+import { type Profile } from '@prisma/client';
+
+import axios  from 'axios';
 
 const GoogleMapsMapSection = () => {
-    const [location, setLocation] = useState<any>(null);
+    
+    const [mecanico, setMecanico] = useState<UsuarioOrden>();
+    const [cliente, setCliente] = useState<UsuarioOrden>();
+    
+  
 
     // Aquí se renderizará el mapa de Google Maps
     const contextSource = useContext(SourceContext);
     const contextDestination = useContext(DestinationContext);
 
-    if(contextSource && contextDestination) {
+    const contextLocation = useContext(LocationContext);
+
+    if(contextSource && contextDestination && contextLocation) {
 
       // Obtenemos las coordenadas desde los contextos
       const {source} = contextSource;
       const {destination} = contextDestination;
+      const {location, setLocation} = contextLocation;
 
       // Indicamos los estilos del contenedor del mapa
       const containerStyle = {
@@ -117,44 +139,9 @@ const GoogleMapsMapSection = () => {
         }
       }
 
-      // useEffect para prueba de localización en tiempo real
-      useEffect(()=>{
-        let infoWindow = new google.maps.InfoWindow();
+      
 
-        let options = {timeout: 2000,maximumAge: 0};
-
-        if(navigator.geolocation){
-          const watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
-            const pos = {lat: position.coords.latitude, lng: position.coords.longitude};
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              timestamp: position.timestamp
-            })
-            console.log("Localización actualizada");
-
-            // const marker = new google.maps.marker.AdvancedMarkerElement({
-            //   map,
-            //   position: pos,
-            //   title: 'Localización'
-            // })
-
-            
-
-          },
-          ()=>{
-            handleLocationError(true, infoWindow, map?.getCenter()!);
-          },
-          options);
-
-          return () => navigator.geolocation.clearWatch(watchId);
-        }
-        else
-        {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map?.getCenter()!);
-        }
-      }, []);
+      
       
       // Función que se realizará en cuanto se cargue el mapa
       const onLoad = useCallback(function callback(map: google.maps.Map) {
@@ -166,21 +153,13 @@ const GoogleMapsMapSection = () => {
         map.fitBounds(bounds);
         
         // HTML5 geolocation
-        if(navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((position: GeolocationPosition)=>{
-            const pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-
-            infoWindow.setPosition(pos);
-            infoWindow.setContent("Location found");
-            infoWindow.open(map);
-            map.setCenter(pos);
-          },
-          () => {
-            handleLocationError(true, infoWindow, map.getCenter()!);
-          });
+        if(navigator.geolocation && location) {
+          
+          infoWindow.setPosition(location);
+          infoWindow.setContent("Location found");
+          infoWindow.open(map);
+          map.setCenter(location);
+          
         }
         else
         {
@@ -227,48 +206,56 @@ const GoogleMapsMapSection = () => {
             }}
             >
               { /* Child components, such as markers, info windows, etc. */ }
-              {source ? <MarkerF
-              position={{
-                lat:source.lat,
-                lng:source.lng
-              }}
-              // icon={{
-              //   url:"",
-              //   scaledSize:{
-              //     width:20,
-              //     height:20,               
-              //   }
-              // }}
+              {mecanico ? <MarkerF
+              position={
+                {lat:mecanico.lat,
+                lng:mecanico.lng}
+              }
+              icon =  {
+                {
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  strokeColor : '#3333FF',
+                  strokeWeight : 5,
+                  scale: 2.5
+                }
+              }
               >
-                <OverlayView
-                position={{lat:source.lat,lng:source.lng}}
+                <OverlayView 
+                position={{
+                  lat: mecanico.lat,
+                  lng: mecanico.lng
+                }}
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                   <div className='p-2 bg-white font-bold inline-block'>
-                    <p className='text-black text-[16px]'>{source.label}</p>
+                    <p className='text-black text-[16px]'>{mecanico.name}</p>
                   </div>
                 </OverlayView>
               </MarkerF>:null}
 
-              {destination ? <MarkerF
-              position={{
-                lat:destination.lat,
-                lng:destination.lng
-              }}
-              // icon={{
-              //   url:"",
-              //   scaledSize:{
-              //     width:20,
-              //     height:20,               
-              //   }
-              // }}
+              {cliente ? <MarkerF
+              position={
+                {lat:cliente.lat,
+                lng:cliente.lng}
+              }
+              icon =  {
+                {
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  strokeColor : '#3333FF',
+                  strokeWeight : 5,
+                  scale: 2.5
+                }
+              }
               >
-                <OverlayView
-                position={{lat:destination.lat,lng:destination.lng}}
+                <OverlayView 
+                position={{
+                  lat: cliente.lat,
+                  lng: cliente.lng
+                }}
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                   <div className='p-2 bg-white font-bold inline-block'>
-                    <p className='text-black text-[16px]'>{destination.label}</p>
+                    <p className='text-black text-[16px]'>{cliente.name}</p>
                   </div>
                 </OverlayView>
               </MarkerF>:null}
@@ -289,8 +276,7 @@ const GoogleMapsMapSection = () => {
             <div>
               {location ? (
                 <p className='text-black'>
-                  Your latitude: {location.latitude}, longitude: {location.longitude},
-                  Timestanp: {location.timestamp}
+                  Your latitude: {location.lat}, longitude: {location.lng}
                 </p>
               ) : (
                 <p className='text-black'>Fetching location...</p>
