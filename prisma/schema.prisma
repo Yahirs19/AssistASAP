@@ -80,14 +80,30 @@ model Admin {
 
 }
 
+model Proveedor{
+  id String @id @default(uuid())
+  Nombre String 
+  Foto String @db.Text
+  Empresa String
+  Ubicacion String
+  RFC String
+  // Un provedor puede publicar muchos productos
+  productos Product[]
+
+}
+
+
+
 // Tabla Product, donde se guardarán los productos que se van a vender
 model Product{
   id String @id @default(uuid())
   name String
   imageUrl String @db.Text
-  price Decimal @db.Decimal(8,2)
+  price Float
+  cantidad Int
   slug String
   description String
+  cate String
     
   // Un producto, puede estar en muchas ordenes de servicio
   ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
@@ -97,7 +113,16 @@ model Product{
   usuarioAdminID String?
   usuarioAdmin Admin? @relation(fields: [usuarioAdminID], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
+
+  //De que proveedor es 
+  proveedorID String?
+  provedor Proveedor? @relation(fields: [proveedorID], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  RegDate  DateTime  @default(now())
+  UpdatedDate DateTime  @updatedAt
+
   @@index([usuarioAdminID])
+  @@index([proveedorID])
 }
 
 enum TipoServicio {

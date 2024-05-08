@@ -31,7 +31,7 @@ export default function ProductItem({
           {name}
         </Link>
       </h3>
-      <p className="mt-1 text-sm font-medium text-gray-900">{price}</p>
+      <p className="mt-1 text-sm font-medium text-gray-900">${price}</p>
     </>
   );
 }

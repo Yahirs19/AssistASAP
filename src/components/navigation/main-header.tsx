@@ -9,7 +9,8 @@ import {
   Cog6ToothIcon,
   HomeIcon,
   XMarkIcon,
-  ClipboardDocumentCheckIcon,
+  ClipboardDocumentCheckIcon,ArchiveBoxIcon,
+  ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -29,6 +30,12 @@ const navigation = [
     name: "Mis Pedidos",
     href: "/pedidos",
     icon: ClipboardDocumentCheckIcon,
+    current: false,
+  },
+  {
+    name: "Inventario",
+    href: "/inventario",
+    icon: ArchiveBoxIcon,
     current: false,
   },
 ];
@@ -213,7 +220,18 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                   </ul>
                 </li>
 
+
                 <li className="mt-auto">
+                <a
+                    href="/chatbot"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                  >
+                    <ChatBubbleLeftRightIcon
+                      className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+                      aria-hidden="true"
+                    />
+                    Chat Bot
+                  </a>
                   <a
                     href="#"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
