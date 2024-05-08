@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma';
+import { db } from '@/lib/db';
 import { parse } from 'path';
 
 
@@ -7,15 +7,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id, name, imageUrl, price, slug, description, usuarioAdminID, proveedorID,cantidad, cate} = req.body;
+  const { id, name, imageUrl, price, slug, description, usuarioAdminID, proveedorID,cantidad, categoriaId} = req.body;
   const parsedPrice = parseFloat(price);
   const intcantid = parseInt(cantidad);
 
   if (req.method === 'GET') {
-    const users = await prisma.product.findMany();
-    res.status(200).json(users);
+    const productos = await db.product.findMany();
+    res.status(200).json(productos);
   } else if (req.method === 'POST') {
-    const post = await prisma.product.create({
+    const post = await db.product.create({
       data: {
         name,
         imageUrl,
@@ -23,14 +23,14 @@ export default async function handler(
         cantidad:intcantid,
         slug,
         description,
-        cate,
+        categoriaId,
         usuarioAdminID,
         proveedorID,
       },
     });
     res.status(201).json(post);
   } else if (req.method === 'PUT') {
-    const post = await prisma.product.update({
+    const post = await db.product.update({
       where: { id: id },
       data: {
         name,
@@ -39,7 +39,7 @@ export default async function handler(
         cantidad: intcantid,
         slug,
         description,
-        cate,
+        categoriaId,
         usuarioAdminID,
         proveedorID,
       },
@@ -56,7 +56,7 @@ export default async function handler(
     
     try {
         // Elimina el producto con el ID especificado
-        const post = await prisma.product.delete({
+        const post = await db.product.delete({
             where: { id: id },
         });
         res.status(200).json(post);

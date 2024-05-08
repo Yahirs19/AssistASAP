@@ -92,7 +92,18 @@ model Proveedor{
 
 }
 
+// Tabla Inventario
+model Inventario {
+  id String @id @default(uuid())
+  productos Product[]
+}
 
+model Categoria {
+  id String @id @default(uuid())
+  nombre String 
+
+  productos Product[]
+}
 
 // Tabla Product, donde se guardarán los productos que se van a vender
 model Product{
@@ -103,8 +114,10 @@ model Product{
   cantidad Int
   slug String
   description String
-  cate String
-    
+
+  categoria Categoria? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  categoriaId String?
+
   // Un producto, puede estar en muchas ordenes de servicio
   ordenesServicio ProductosEnOrdenes[] @relation(name: "Ordenes")
   
@@ -118,11 +131,17 @@ model Product{
   proveedorID String?
   provedor Proveedor? @relation(fields: [proveedorID], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
+  // El producto está en un inventario
+  inventario Inventario? @relation(fields: [inventarioId], references: [id])
+  inventarioId String?
+
   RegDate  DateTime  @default(now())
   UpdatedDate DateTime  @updatedAt
 
   @@index([usuarioAdminID])
   @@index([proveedorID])
+  @@index([categoriaId])
+  @@index([inventarioId])
 }
 
 enum TipoServicio {

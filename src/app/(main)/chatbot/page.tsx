@@ -1,15 +1,13 @@
 "use client"
 import React, { useState } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { genAI as gemini } from '@/lib/geminiAI';
 
 const App: React.FC = () => {
     const [messages, setMessages] = useState<Array<{ user: boolean; text: string }>>([]);
     const [inputValue, setInputValue] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const apiKey = 'AIzaSyANfQyF3DEoW8Zu3IpioNlyEI70VD0W7PQ'; // Reemplaza con tu clave API de Google Generative AI
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    
+    const model = gemini.getGenerativeModel({ model: 'gemini-pro' });
 
     const handleMessageSend = async () => {
         if (inputValue.trim() === '') {

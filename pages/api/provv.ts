@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma';
+import { db } from '@/lib/db';
 import { parse } from 'path';
 import { NextResponse } from 'next/server';
 
@@ -10,10 +10,10 @@ export default async function handler(
   const { id, Nombre, Foto, Empresa, Ubicacion, RFC } = req.body;
 
   if (req.method === 'GET') {
-    const users = await prisma.proveedor.findMany();
+    const users = await db.proveedor.findMany();
     res.status(200).json(users);
   } else if (req.method === 'POST') {
-    const post = await prisma.proveedor.create({
+    const post = await db.proveedor.create({
       data: {
             Nombre,
             Foto,
@@ -24,7 +24,7 @@ export default async function handler(
     });
     res.status(201).json(post);
   } else if (req.method === 'PUT') {
-    const post = await prisma.proveedor.update({
+    const post = await db.proveedor.update({
       where: { id: id },
       data: {
             Nombre,
@@ -46,7 +46,7 @@ export default async function handler(
     
     try {
         // Elimina el producto con el ID especificado
-        const post = await prisma.proveedor.delete({
+        const post = await db.proveedor.delete({
             where: { id: id },
         });
         res.status(200).json(post);

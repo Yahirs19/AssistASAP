@@ -1,15 +1,17 @@
 "use client"
 
-import { Product, Proveedor } from '@prisma/client';
+import { Proveedor, Product, Categoria } from '@prisma/client';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import * as React from 'react';
 import { string } from 'zod';
+import { Producto } from '@/types/types';
 
 export default function Home() {
   const [prods, setProds] = useState<Product[]>([]);
   const [provs, setProvs] = useState<Proveedor[]>([]);
+  const [categs, setCategorias] = useState<Categoria[]>([]);
   const [search, setSearch] = useState('');
   //Constantes del formulario
   const [showForm, setShowForm] = useState(false);
@@ -30,6 +32,8 @@ export default function Home() {
   //Constantes de eliminacion 
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
+  
+
 
   const [pro, setPro] = useState<Product>({
     id: '',
@@ -39,9 +43,10 @@ export default function Home() {
     cantidad: 0,
     slug: '', 
     description: '',
-    cate: '',
+    categoriaId: '',
     usuarioAdminID: 'c32d8b45-92fe-44f6-8b61-42c2107dfe87',
     proveedorID: '',
+    inventarioId: '',
     RegDate: new Date,
     UpdatedDate: new Date,
   });
@@ -69,29 +74,47 @@ export default function Home() {
       });
 
     if (res && res.data) {
+      console.log(res.data);
       setProvs(res.data);
     }
+  };
+
+  const GetCategorias = async () => {
+    const res = await axios.get('/api/categorias')
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
+
+      if(res && res.data){
+        console.log(res.data);
+        setCategorias(res.data);
+      }
   };
 
   // Llama a las funciones para obtener productos y proveedores
   useEffect(() => {
     GetProductos();
     GetProveedores();
+    GetCategorias();
+
+    setSelectedCategoria(categs[0]?.id);
   }, []);
 
 
   const AddProductos = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-            // Verificar si el nombre del producto ya existe en `prods`
-            const productExists = prods.some((product) => product.name.toLowerCase() === pro.name.toLowerCase());
+    // Verificar si el nombre del producto ya existe en `prods`
+    const productExists = prods.some((product) => product.name.toLowerCase() === pro.name.toLowerCase());
 
-            if (productExists) {
-                // Si el producto ya existe, muestra el cuadro de diálogo de advertencia
-                setIsDialogOpen(true);
-                ResetProductos();
-                return;
-            }
+    if (productExists) {
+        // Si el producto ya existe, muestra el cuadro de diálogo de advertencia
+        setIsDialogOpen(true);
+        ResetProductos();
+        return;
+    }
+
+    console.log(pro);
     
     const resp = await axios.post('/api/prodd', {
       name: pro.name,
@@ -100,7 +123,7 @@ export default function Home() {
       cantidad: pro.cantidad,
       slug: pro.slug,
       description: pro.description,
-      cate: pro.cate,
+      categoriaId: pro.categoriaId,
       usuarioAdminID: '3d436c5c-846d-45e0-b60f-505f9b3703df',
       proveedorID: pro.proveedorID,
     });
@@ -140,7 +163,7 @@ export default function Home() {
   };
 
   const ResetProductos = () => {
-    setPro(prevState => ({ ...prevState, id: '', name: '', imageUrl: '', price: 0, cantidad: 0, slug:'', description:'' , cate: ''}))
+    setPro(prevState => ({ ...prevState, id: '', name: '', imageUrl: '', price: 0, cantidad: 0, slug:'', description:'' , categoriaId: ''}))
   }
 
   const EditProductos = async (userId: string) => {
@@ -242,8 +265,9 @@ const handleProveedorChange = (e: ChangeEvent<HTMLSelectElement>) => {
         pro.cantidad === null || pro.cantidad === undefined || pro.cantidad.toString().trim() === '' || // Convertir 'cantidad' a string y aplicar 'trim()'
         pro.slug.trim() === '' || // Campo 'slug' debe ser string
         pro.description.trim() === '' || // Campo 'description' debe ser string
-        pro.cate.trim() === ''  ||// Campo 'cate' debe ser string
-        selectedProveedorID.trim() === '' // Campo 'selectedProveedorID' debe ser string
+
+        selectedCategoria?.trim() === '' || selectedCategoria === undefined ||
+        selectedProveedorID?.trim() === '' || selectedProveedorID === undefined // Campo 'selectedProveedorID' debe ser string
         
     ) {
         return false; // Si algún campo está vacío, devuelve false
@@ -276,6 +300,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
   if (validateForm()) {
       // Si la validación es exitosa, llama a AddProductos para agregar el producto
+      console.log(e);
       AddProductos(e);
       setShowForm(false);
   } else {
@@ -295,7 +320,7 @@ const validateForm2 = () => {
       pro.cantidad === null || pro.cantidad === undefined || pro.cantidad.toString().trim() === '' || // Convertir 'cantidad' a string y aplicar 'trim()'
       pro.slug.trim() === '' || // Campo 'slug' debe ser string
       pro.description.trim() === '' || // Campo 'description' debe ser string
-      pro.cate.trim() === ''  // Campo 'description' debe ser string
+      pro.categoriaId?.trim() === ''  // Campo 'description' debe ser string
   ) 
   {
       return false; // Si algún campo está vacío, devuelve false
@@ -361,20 +386,30 @@ const handleCancelDelete = () => {
 
 
   //Constante de categorias 
-  const categorias = [
-    { value: '', label: 'Seleccione una categoría' },
-    { value: 'Aceites', label: 'Aceites' },
-    { value: 'Herramientas_mano', label: 'Herramientas de mano' },
-    { value: 'Herramientas_electricas', label: 'Herramientas eléctricas' },
-    { value: 'Herramientas_neumaticas', label: 'Herramientas neumáticas' },
-    { value: 'Equipos_medicion', label: 'Equipos de medición y diagnóstico' },
-    { value: 'Componentes_repuestos', label: 'Componentes y repuestos' },
-    { value: 'Lubricantes_quimicos', label: 'Lubricantes y productos químicos' },
-    { value: 'Suministros_taller', label: 'Suministros de taller y seguridad' },
-    { value: 'Sistemas_elevacion', label: 'Sistemas de elevación y sujeción' },
-    { value: 'Maquinaria_equipos_pesados', label: 'Maquinaria y equipos pesados' },
-    { value: 'Herramientas_especializadas', label: 'Herramientas especializadas' }
-];
+//   const categorias = [
+//     { value: '', label: 'Seleccione una categoría' },
+//     { value: 'Aceites', label: 'Aceites' },
+//     { value: 'Herramientas_mano', label: 'Herramientas de mano' },
+//     { value: 'Herramientas_electricas', label: 'Herramientas eléctricas' },
+//     { value: 'Herramientas_neumaticas', label: 'Herramientas neumáticas' },
+//     { value: 'Equipos_medicion', label: 'Equipos de medición y diagnóstico' },
+//     { value: 'Componentes_repuestos', label: 'Componentes y repuestos' },
+//     { value: 'Lubricantes_quimicos', label: 'Lubricantes y productos químicos' },
+//     { value: 'Suministros_taller', label: 'Suministros de taller y seguridad' },
+//     { value: 'Sistemas_elevacion', label: 'Sistemas de elevación y sujeción' },
+//     { value: 'Maquinaria_equipos_pesados', label: 'Maquinaria y equipos pesados' },
+//     { value: 'Herramientas_especializadas', label: 'Herramientas especializadas' }
+// ];
+
+const getNombreCategoria = (id: string|null) => {
+  if(id!==null){
+    const category = categs.find((category) => category.id === id);
+
+    return category?.nombre;
+  }
+
+  return null;
+}
 
 const [selectedCategoria, setSelectedCategoria] = useState('');
 
@@ -384,10 +419,11 @@ const [selectedCategoria, setSelectedCategoria] = useState('');
       // Actualizar la propiedad `cate` de `pro` con el valor seleccionado
       setPro((prevPro) => ({
           ...prevPro,
-          cate: value,
+          categoriaId: value,
       }));
       // Actualizar el estado de categoría seleccionada
       setSelectedCategoria(value);
+      console.log(selectedCategoria);
   };
 
 
@@ -434,13 +470,13 @@ const [selectedCategoria, setSelectedCategoria] = useState('');
                 <label htmlFor="description" style={{ marginBottom: '10px', color: '#333', fontSize: '14px', fontWeight: 'bold', width: '100%', textAlign: 'left' }}>Descripción:</label>
                 <input onChange={HandleChange} value={pro.description} type="text" name="description" style={{ marginBottom: '15px', padding: '10px', width: '100%', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px' }} />
 
-                <label htmlFor="categoria" style={{ marginBottom: '10px', color: '#333', fontSize: '14px', fontWeight: 'bold', width: '100%', textAlign: 'left' }}>Categoría:</label>
+                <label htmlFor="categoriaId" style={{ marginBottom: '10px', color: '#333', fontSize: '14px', fontWeight: 'bold', width: '100%', textAlign: 'left' }}>Categoría:</label>
 
                 {/* Combobox para seleccionar una categoría de productos de mecánica */}
             <select
                 value={selectedCategoria}
                 onChange={handleCategoriaChange}
-                name="categoria"
+                name="categoriaId"
                 style={{
                     marginBottom: '15px',
                     padding: '10px',
@@ -450,9 +486,10 @@ const [selectedCategoria, setSelectedCategoria] = useState('');
                     fontSize: '14px',
                 }}
             >
-                {categorias.map((categoria) => (
-                    <option key={categoria.value} value={categoria.value}>
-                        {categoria.label}
+              <option value="">Seleccionar categoria</option>
+                {categs.map((categoria) => (
+                    <option key={categoria.id} value={categoria.id}>
+                        {categoria.nombre}
                     </option>
                 ))}
             </select>
@@ -685,7 +722,7 @@ const [selectedCategoria, setSelectedCategoria] = useState('');
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.cantidad}</td>
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.slug}</td>
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.description}</td>
-    <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.cate}</td>
+    <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{getNombreCategoria(prodss.categoriaId)}</td>
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.usuarioAdminID}</td>
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.proveedorID}</td>
     <td style={{ border: '1px solid #E5E7EB', padding: '8px', textAlign: 'center' }}>{prodss.RegDate.toString()}</td>
