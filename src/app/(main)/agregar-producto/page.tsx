@@ -2,85 +2,108 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ProductoZSchema } from "@/zod/schemas/productSchemaZos";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { CrearProductoZSchema } from "@/zod/schemas/productSchemaZos";
 import {
   Form,
-  FormField,
   FormControl,
-  FormDescription,
+  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
+import ImagePicker from "@/components/products/image-pickerProduct";
+import { useState } from "react";
 
 export default function AgregarProductoPage() {
-  const form = useForm<z.infer<typeof ProductoZSchema>>({
-    resolver: zodResolver(ProductoZSchema),
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  const form = useForm<z.infer<typeof CrearProductoZSchema>>({
+    resolver: zodResolver(CrearProductoZSchema),
     defaultValues: {
       name: "",
-      slug: "",
       description: "",
-      imageAlt: "",
       price: "",
+      imageUrl: "",
     },
   });
 
-  const handleSubmit = () => {};
+  function onSubmit(values: z.infer<typeof CrearProductoZSchema>) {
+    event?.preventDefault();
+    values.imageUrl = imageUrl;
+    try {
+      fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+    } catch (error) {
+      console.error(error);
+    }
 
+    console.log("values:", values);
+  }
   return (
-    <>
-      <div className="bg-white mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-25 lg:max-w-7xl lg:px-8">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-8"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre del producto</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripcion del producto</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Precio del producto</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-      </div>
-    </>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nombre del producto</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripcion del producto</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Precio del producto</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Imagen</FormLabel>
+              <FormControl>
+                <ImagePicker setImage={setImageUrl} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   );
 }

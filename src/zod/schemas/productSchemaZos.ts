@@ -9,3 +9,11 @@ export const ProductoZSchema = z.object({
   imageUrl: z.string().trim(),
   price: z.string().trim(),
 });
+
+export const CrearProductoZSchema = z.object({
+  name: z.string().trim(),
+  description: z.string().trim(),
+  price: z.string().trim(),
+  //imageAlt: z.string().trim(),
+  imageUrl: z.string().trim(),
+});

@@ -64,6 +64,15 @@ model Mechanic {
   ordenesServicio OrdenServicio[]
 }
 
+
+model Producto{
+  id String @id @default(uuid())
+  name String?
+  description String?
+  price String?
+  imageUrl String?
+}
+
 // Tabla Product, donde se guardarán los productos que se van a vender
 model Product{
   id String @id @default(uuid())

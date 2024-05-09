@@ -1,3 +1,5 @@
+import DeleteProductButton from "@/components/products/deleteProductButton";
+import { Button } from "@/components/ui/button";
 import { buscarProductoSlug } from "@/lib/queries/productQueries";
 import {
   CheckIcon,
@@ -7,16 +9,6 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-/*const product = {
-  id: 1,
-  name: "Prestone Refrigerante anticongelante",
-  slug: "prestone-refrigerante-anticongelante",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-  imageSrc: "/aceite.png",
-  imageAlt: "Anticongelante",
-  price: "$640.00",
-};*/
 interface RouteParams {
   productSlug: string;
 }
@@ -28,12 +20,17 @@ export default async function Example({ params }: { params: RouteParams }) {
   if (!product) {
     notFound();
   }
+
   return (
     <div className="bg-white">
-      <Link href="/products" className="">
-        {" "}
-        <ChevronLeftIcon className="h-10 w-10" />
-      </Link>
+      <div className="flex ">
+        <Link href="/products" className="">
+          {" "}
+          <ChevronLeftIcon className="h-10 w-10" />
+        </Link>
+        <DeleteProductButton productId={params.productSlug} />
+      </div>
+
       <div className="mx-auto max-w-2xl px-4 pb-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
         <div className="lg:max-w-lg lg:self-end">
