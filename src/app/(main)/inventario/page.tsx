@@ -439,7 +439,27 @@ export default function Home() {
   return (
     <main style={{ marginTop: "5px", display: "flex", position: "relative" }}>
       {/* Formulario condicional */}
-      {showForm && <FormCreateProductPage />}
+      {showForm && (
+        <div>
+          <FormCreateProductPage />
+          <button
+            onClick={() => {
+              setShowForm(false), ResetProductos(), setError("");
+            }}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#F87171",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
 
       {isDialogOpen && (
         <div
