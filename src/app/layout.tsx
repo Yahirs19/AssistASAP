@@ -4,8 +4,9 @@ import "./globals.css";
 import MainHeader from "../components/navigation/main-header";
 import GoogleMapsLayout from "@/app/(maps)/mapsTest/layout";
 
-import {ClerkProvider} from "@clerk/nextjs";
-import {dark, neobrutalism} from "@clerk/themes";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark, neobrutalism } from "@clerk/themes";
+import { CartProvider } from "@/components/shopping-bag/contextCarrito";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,20 +28,22 @@ export default function RootLayout({
   para sus componentes
   */
   return (
-    <ClerkProvider
-    appearance={{
-      baseTheme: dark,
-      signIn: { baseTheme: neobrutalism}
-    }}
-    >
-      <html lang="en">
-        <body className="">
-          <GoogleMapsLayout>
-            {/*Main header para manejar las rutas*/}
-            <MainHeader content={children} />
-          </GoogleMapsLayout>
-        </body>
-      </html>
-    </ClerkProvider>
+    <CartProvider>
+      <ClerkProvider
+        appearance={{
+          baseTheme: dark,
+          signIn: { baseTheme: neobrutalism },
+        }}
+      >
+        <html lang="en">
+          <body className="">
+            <GoogleMapsLayout>
+              {/*Main header para manejar las rutas*/}
+              <MainHeader content={children} />
+            </GoogleMapsLayout>
+          </body>
+        </html>
+      </ClerkProvider>
+    </CartProvider>
   );
 }

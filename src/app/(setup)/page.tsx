@@ -1,6 +1,7 @@
 import Banner from "../../components/banner";
 import TestProduct from "../../components/products/mainPageProducts/ProductComponent";
 import Link from "next/link";
+import { CartProvider } from "@/components/shopping-bag/contextCarrito";
 
 import { initialProfile } from "@/lib/initial-profile";
 import { hasTypeOfUser } from "@/utils/typeOfUser";

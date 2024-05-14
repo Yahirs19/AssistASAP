@@ -6,17 +6,8 @@ import {
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AgregarCarritoButton from "@/components/products/mainPageProducts/agregarCarritoButton";
 
-/*const product = {
-  id: 1,
-  name: "Prestone Refrigerante anticongelante",
-  slug: "prestone-refrigerante-anticongelante",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-  imageSrc: "/aceite.png",
-  imageAlt: "Anticongelante",
-  price: "$640.00",
-};*/
 interface RouteParams {
   productSlug: string;
 }
@@ -46,7 +37,7 @@ export default async function Example({ params }: { params: RouteParams }) {
           <section aria-labelledby="information-heading" className="mt-4">
             <div className="flex items-center">
               <p className="text-lg text-gray-900 sm:text-xl">
-                {product.price}
+                ${product.price}
               </p>
 
               <div className="ml-4 border-l border-gray-300 pl-4">
@@ -103,21 +94,7 @@ export default async function Example({ params }: { params: RouteParams }) {
           </div>
         </div>
 
-        {/* Product form */}
-        <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
-          <section aria-labelledby="options-heading">
-            <form>
-              <div className="mt-10">
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                >
-                  Agregar al carrito
-                </button>
-              </div>
-            </form>
-          </section>
-        </div>
+        <AgregarCarritoButton product={product} />
       </div>
     </div>
   );
