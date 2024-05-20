@@ -1,5 +1,10 @@
+import Image from "next/image";
 import { ProductoZSchema } from "@/zod/schemas/productSchemaZos";
 import Link from "next/link";
+
+type Proveedor = {
+  Empresa: string|null
+}
 
 export default function ProductItem({
   id,
@@ -8,13 +13,15 @@ export default function ProductItem({
   description,
   imageUrl,
   price,
+  provedor
 }: {
-  id: number;
+  id: string;
   slug: string;
   name: string;
   description: string;
   imageUrl: string;
   price: string;
+  provedor: Proveedor
 }) {
   return (
     <>
@@ -31,6 +38,7 @@ export default function ProductItem({
           {name}
         </Link>
       </h3>
+      <b>{provedor?.Empresa != null ? provedor?.Empresa : "Sin proveedor"}</b>
       <p className="mt-1 text-sm font-medium text-gray-900">${price}</p>
     </>
   );

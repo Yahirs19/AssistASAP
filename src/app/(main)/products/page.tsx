@@ -1,87 +1,180 @@
+"use client"
+
 import ProductGrid from "@/components/products/productGrid";
 import { Button } from "@/components/ui/button";
-import { mostrarProducto } from "@/lib/queries/productQueries";
+import { SearchProduct } from "@/components/products/componentesFiltrarProduct/searchProduct";
+import { filtrarProductos, mostrarProducto } from "@/lib/queries/productQueries";
 import Link from "next/link";
+import React, { useState, useEffect } from "react";
 
-{
-  /*LISTA DE PRODUCTOS Es un simple mapeo basado al array */
+import axios from "axios";
+
+import { type Categoria, Proveedor } from "@prisma/client";
+import { SelectCategoria } from "@/components/products/componentesFiltrarProduct/selectCategoria";
+import { SelectProveedor } from "@/components/products/componentesFiltrarProduct/selectProveedor";
+
+type Producto = {
+  id:string,
+  name:string,
+  price:string,
+  slug:string,
+  imageUrl:string,
+  provedor: {
+    Empresa:string
+  },
+  categoria: {
+    nombre: string
+  }
 }
-/*const products = [
-  {
-    id: 1,
-    name: "Prestone Refrigerante anticongelante",
-    slug: "prestone-refrigerante-anticongelante",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/aceite.png",
-    imageAlt: "Anticongelante",
-    price: "$640.00",
-  },
-  {
-    id: 2,
-    name: "Bujía para carro ",
-    slug: "bujia-para-carro",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/bujia.png",
-    imageAlt: "Bujía",
-    price: "$1,500.00",
-  },
-  {
-    id: 3,
-    name: "Llanta para coche",
-    slug: "llanta-para-coche",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/llanta.png",
-    imageAlt: "llanta",
-    price: "$2,500.00",
-  },
-  {
-    id: 4,
-    name: "Prestone Refrigerante anticongelante",
-    slug: "prestone-refrigerante-anticongelante",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/aceite.png",
-    imageAlt: "Anticongelante",
-    price: "$640.00",
-  },
-  {
-    id: 5,
-    name: "Bujía para carro ",
-    slug: "bujia-para-carro",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/bujia.png",
-    imageAlt: "Bujía",
-    price: "$1,500.00",
-  },
-  {
-    id: 6,
-    name: "Llanta para coche",
-    slug: "llanta-para-coche",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin consequat nisl finibus cursus. Aenean placerat consectetur neque, sit amet dapibus massa scelerisque quis. Vestibulum elementum purus sapien, eu ullamcorper turpis rhoncus vitae. Vivamus vel dolor in elit sollicitudin aliquet et ac nunc.",
-    imageSrc: "/llanta.png",
-    imageAlt: "llanta",
-    price: "$2,500.00",
-  },
-];*/
-export default async function ProductsPage() {
-  const products = await mostrarProducto();
+
+export default function ProductsPage() {
+  const [productos, setProductos] = useState<Producto[]>([]); 
+  const [resultados, setResultados] = useState<Producto[]>([]);
+
+  const [busqueda, setBusqueda] = useState<string>("");
+
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categoria, setCategoria] = useState<string>("");
+
+
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [proveedor, setProveedor] = useState<string>("");
+
+  const [loaded, setLoaded] = useState<boolean>(false);
+  
+
+
+  const getProducts = async () => {
+    const res = await axios.get("/api/products").catch((error) => {
+      console.log("Error: ", error);
+    });
+
+    if (res && res.data) {
+      console.log(res.data);
+      setProductos(res.data);
+      setResultados(res.data);
+    }
+  };
+
+  const obtenerCategorias = async () => {
+    const res = await axios.get("/api/categorias").catch((error) => {
+      console.log("Error: ", error);
+    });
+
+    if (res && res.data) {
+      console.log(res.data);
+      setCategorias(res.data);
+    }
+  }
+
+  const obtenerProveedores = async () => {
+    const res = await axios.get("/api/proveedores").catch((error) => {
+      console.log("Error: ", error);
+    });
+
+    if (res && res.data) {
+      console.log(res.data);
+      setProveedores(res.data);
+    }
+  }
+
+  useEffect(() => {
+    getProducts();
+    obtenerCategorias();
+    obtenerProveedores();
+
+    setLoaded(true);
+  }, []);
+
+
+  useEffect(()=>{
+    if(busqueda.length < 1)
+    {
+      setResultados(productos);
+    }
+
+    console.log(proveedor, categoria);
+
+    if(categoria !== "" && proveedor !== ""){
+      setResultados(prevState => prevState.filter((producto) => producto.name.toLowerCase().includes(busqueda.toLowerCase()) && producto.categoria.nombre === categoria && producto.provedor.Empresa === proveedor));
+    }
+    else if(categoria!==""){
+      setResultados(prevState => prevState.filter((producto) => producto.name.toLowerCase().includes(busqueda.toLowerCase()) && producto.categoria.nombre === categoria));
+    }
+    else if(proveedor!==""){
+      setResultados(prevState => prevState.filter((producto) => producto.name.toLowerCase().includes(busqueda.toLowerCase()) && producto.provedor.Empresa === proveedor));
+    }
+    else{
+      setResultados(prevState => prevState.filter((producto) => producto.name.toLowerCase().includes(busqueda.toLowerCase())));
+
+    }
+
+  },[busqueda, proveedor, categoria]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if(e.target.value.length < 1){
+      setBusqueda("");
+    }
+
+    setResultados(productos);
+    setBusqueda(e.target.value);
+  }
+
+  const handleCategoriaChange = (value: string) => {
+    setResultados(productos);
+
+    if(value==="all"){
+      setCategoria("");
+    }
+    else{
+      setCategoria(value);
+    }
+  }
+
+
+  const handleProveedorChange = (value: string) => {
+    setResultados(productos);
+
+    if(value==="all"){
+      setProveedor("");
+    }
+    else{
+      setProveedor(value);
+    }
+  }
+
+
+
 
   return (
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-25 lg:max-w-7xl lg:px-8">
+          <div className="flex flex-col md:flex md:items-center md:justify-between">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 m-8">
+              Filtrar productos
+            </h2>
+            <SearchProduct onChange={handleSearchChange} />
+            <SelectCategoria categorias={categorias} onChange={handleCategoriaChange}/>
+            <SelectProveedor proveedores={proveedores} onChange={handleProveedorChange} />
+          </div>
+          
+          
           <div className="md:flex md:items-center md:justify-between">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            <h2 className="mt-5 text-2xl font-bold tracking-tight text-gray-900">
               Todos los productos
             </h2>
           </div>
 
-          <ProductGrid products={products} />
+          {
+            loaded ? (
+            <ProductGrid products={resultados} />
+            ) : (
+              <p> Cargando... </p>
+            )
+          }
           <Link href="/agregar-producto">
             <Button variant="outline">Agregar Producto</Button>
           </Link>

@@ -1,6 +1,7 @@
 "use client";
 import React, { FormEvent } from "react";
-import { useCart } from "@/components/shopping-bag/contextCarrito";
+import { useCart } from "@/contexts/contextCarrito";
+import { useRouter } from "next/navigation";
 
 // Define la interfaz para el objeto product
 interface Product {
@@ -10,6 +11,7 @@ interface Product {
   imageUrl: string;
   description: string;
   slug: string;
+  cantidad: number;
 }
 
 // Define las props del componente usando la interfaz Product
@@ -21,10 +23,13 @@ export default function AgregarCarritoButton({
   product,
 }: AgregarCarritoButtonProps) {
   const { addToCart } = useCart();
+  const router = useRouter();
+
   function submitHandler(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     addToCart(product);
     console.log("Producto agregado:", product);
+    router.push("/shopping-bag");
   }
   return (
     <>

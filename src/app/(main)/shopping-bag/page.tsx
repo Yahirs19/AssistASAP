@@ -3,7 +3,6 @@ import ShoppingBagComponent from "@/components/shopping-bag/shoppingBagComponent
 export default function ShopingBag() {
   return (
     <>
-      <h1>Shopping bag</h1>
       <ShoppingBagComponent />
     </>
   );

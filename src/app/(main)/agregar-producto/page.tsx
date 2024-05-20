@@ -22,11 +22,42 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import ImagePicker from "@/components/products/componentsCrearProduct/imagepickerProduct";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { type Categoria, type Proveedor } from "@prisma/client";
+
+import axios from "axios";
 
 export default function AgregarProductoPage() {
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+
+  const obtenerCategorias = async () => {
+    const res = await axios.get("/api/categorias").catch((error) => {
+      console.log("Error: ", error);
+    });
+
+    if (res && res.data) {
+      console.log(res.data);
+      setCategorias(res.data);
+    }
+  }
+
+  const obtenerProveedores = async () => {
+    const res = await axios.get("/api/proveedores").catch((error) => {
+      console.log("Error: ", error);
+    });
+
+    if (res && res.data) {
+      console.log(res.data);
+      setProveedores(res.data);
+    }
+  }
+
+  useEffect(()=>{
+    obtenerCategorias();
+    obtenerProveedores();
+  },[])
 
   const form = useForm<z.infer<typeof CrearProductoZSchema>>({
     resolver: zodResolver(CrearProductoZSchema),
@@ -134,21 +165,11 @@ export default function AgregarProductoPage() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="138314e7-1184-49db-871b-fe1d1d87be07">
-                      Lubricantes Quimicos
-                    </SelectItem>
-                    <SelectItem value="446b39b3-d90a-473e-80dc-930c24445243">
-                      Herramientas Electricas
-                    </SelectItem>
-                    <SelectItem value="887b398a-8cb6-4192-8a22-f497d162b0f1">
-                      Herramientas Especializadas
-                    </SelectItem>
-                    <SelectItem value="c5f734c4-0bf0-4f99-b281-8f375427de36">
-                      Equipos de Medicion
-                    </SelectItem>
-                    <SelectItem value="dc41da93-10c3-4e8a-9a63-752dfc82fb62">
-                      Aceites
-                    </SelectItem>
+                    {categorias.map((categoria) => (
+                      <SelectItem key={categoria.id} value={categoria.id}>
+                        {categoria.nombre}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -171,24 +192,11 @@ export default function AgregarProductoPage() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="05e4c0c8-bd9a-4c47-9ebe-b6a7ee6a8639">
-                      Amazon MX
-                    </SelectItem>
-                    <SelectItem value="1c9b1dfc-31ca-4561-8d0e-d27d6eb102fa">
-                      Mercado Libre
-                    </SelectItem>
-                    <SelectItem value="3bf1900e-5338-47ed-ad6b-034ff1189765">
-                      Grainger Mexico
-                    </SelectItem>
-                    <SelectItem value="3f31adcb-780b-4dec-9be6-398436be2bfc">
-                      Productos Castrol
-                    </SelectItem>
-                    <SelectItem value="c5f4a347-0c60-454c-8223-25714e030f9c">
-                      LTH
-                    </SelectItem>
-                    <SelectItem value="ed5b07fd-486c-46e3-b0c8-cba8dc86b3a3">
-                      Autozone
-                    </SelectItem>
+                    {proveedores.map((proveedor)=>(
+                      <SelectItem key={proveedor.id} value={proveedor.id}>
+                        {proveedor.Empresa}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />

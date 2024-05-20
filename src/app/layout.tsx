@@ -6,7 +6,10 @@ import GoogleMapsLayout from "@/app/(maps)/mapsTest/layout";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
-import { CartProvider } from "@/components/shopping-bag/contextCarrito";
+import { CartProvider } from "@/contexts/contextCarrito";
+
+import { Toaster } from "@/components/ui/toaster";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,6 +43,7 @@ export default function RootLayout({
             <GoogleMapsLayout>
               {/*Main header para manejar las rutas*/}
               <MainHeader content={children} />
+              <Toaster/>
             </GoogleMapsLayout>
           </body>
         </html>

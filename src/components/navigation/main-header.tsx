@@ -11,6 +11,7 @@ import {
   XMarkIcon,
   ClipboardDocumentCheckIcon,ArchiveBoxIcon,
   ChatBubbleLeftRightIcon,
+  WrenchScrewdriverIcon
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -33,15 +34,17 @@ const navigation = [
     current: false,
   },
   {
+    name: "Productos",
+    href: "/products",
+    icon: WrenchScrewdriverIcon,
+    current: false
+  },
+  {
     name: "Inventario",
     href: "/inventario",
     icon: ArchiveBoxIcon,
     current: false,
   },
-];
-const userNavigation = [
-  { name: "Your profile", href: "/profile" },
-  { name: "Sign out", href: "/" },
 ];
 
 export default function MainHeader({ content }: { content: ReactNode }) {

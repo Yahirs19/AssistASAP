@@ -14,6 +14,7 @@ interface RouteParams {
 const reviews = { average: 4, totalCount: 1624 };
 
 export default async function Example({ params }: { params: RouteParams }) {
+  console.log(params.productSlug)
   const product = await buscarProductoSlug(params.productSlug);
 
   if (!product) {

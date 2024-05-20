@@ -1,19 +1,38 @@
-import {UserButton, SignedOut, SignedIn, SignInButton} from "@clerk/nextjs";
+"use client"
+
+import {UserButton, SignInButton, useAuth, ClerkLoading, ClerkLoaded} from "@clerk/nextjs";
 
 const UserMenu = () => {
-    return (
-        <>
-            <SignedOut>
-                <SignInButton mode="modal">
-                    <button className="text-gray-500">Iniciar sesión</button>
-                </SignInButton>
-            </SignedOut>
+    const {isLoaded, userId} = useAuth();
 
-            <SignedIn>
+    if(!isLoaded || !userId) {
+        return (
+            <>
+                <ClerkLoading>
+                    <div>Cargando...</div>
+                </ClerkLoading>
+
+                <ClerkLoaded>
+                    <SignInButton mode="modal">
+                        <button className="text-gray-500">Iniciar sesión</button>
+                    </SignInButton>
+                </ClerkLoaded>
+            </>
+        )
+    }
+
+    return (
+
+        <>
+            <ClerkLoading>
+                <div>Cargando...</div>
+            </ClerkLoading>
+
+            <ClerkLoaded>
                 <UserButton 
                 afterSignOutUrl="/"              
-                />
-            </SignedIn>
+                /> 
+            </ClerkLoaded>
         </>
     )
 }

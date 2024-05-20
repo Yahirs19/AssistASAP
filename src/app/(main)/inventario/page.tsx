@@ -56,7 +56,7 @@ export default function Home() {
   });
 
   const GetProductos = async () => {
-    const res = await axios.get("/api/prodd").catch((error) => {
+    const res = await axios.get("/api/products/productosGenerales").catch((error) => {
       console.log("catch: ", error.message);
     });
 
@@ -70,7 +70,7 @@ export default function Home() {
   const [selectedProveedorID, setSelectedProveedorID] = useState("");
 
   const GetProveedores = async () => {
-    const res = await axios.get("/api/provv").catch((error) => {
+    const res = await axios.get("/api/proveedores").catch((error) => {
       console.log("catch: ", error.message);
     });
 
@@ -117,7 +117,7 @@ export default function Home() {
 
     console.log(pro);
 
-    const resp = await axios.post("/api/prodd", {
+    const resp = await axios.post("/api/products/productosGenerales", {
       name: pro.name,
       imageUrl: pro.imageUrl,
       price: pro.price,
@@ -142,7 +142,7 @@ export default function Home() {
   const UpdateProductos = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const resp = await axios.put("/api/prodd", {
+    const resp = await axios.put("/api/products/productosGenerales", {
       id: pro.id,
       name: pro.name,
       imageUrl: pro.imageUrl,
@@ -184,10 +184,9 @@ export default function Home() {
   };
 
   const DeleteProductos = async (userId: string) => {
+    console.log(userId)
     const resp = await axios
-      .delete("/api/prodd", {
-        params: { id: userId },
-      })
+      .delete(`/api/products/productosGenerales?id=${userId}`)
       .catch((error) => {
         console.log("catch: ", error.message);
       });
@@ -441,7 +440,7 @@ export default function Home() {
       {/* Formulario condicional */}
       {showForm && (
         <div>
-          <FormCreateProductPage />
+          <FormCreateProductPage categorias={categs} proveedores={provs} />
           <button
             onClick={() => {
               setShowForm(false), ResetProductos(), setError("");

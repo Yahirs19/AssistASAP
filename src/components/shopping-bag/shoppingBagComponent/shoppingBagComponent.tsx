@@ -1,21 +1,84 @@
 "use client";
 import React from "react";
-import { useCart } from "../contextCarrito";
+import { Product, useCart } from "../../../contexts/contextCarrito";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+
+import { useRouter } from 'next/navigation';
+
+
+import { useToast } from "@/components/ui/use-toast";
+
+import axios from "axios";
 
 export default function ShoppingBagComponent() {
-  const { cart, removeFromCart } = useCart();
+  const { cart, setCart, removeFromCart, insertarUno, removerUno } = useCart();
 
-  const subtotal = cart
-    .reduce((total, product) => total + product.price, 0)
+  const router = useRouter()
+
+  const {toast} = useToast();
+
+  type ProductosEnOrden = {
+    productoID: string,
+    cantidad: number
+  }
+
+
+  const handleSubmitOrden = async (carrito:Product[], total:string) => {
+    if(carrito.length > 0){
+      console.log(carrito);
+
+      let productosAOrden: ProductosEnOrden[] = [];
+
+      carrito.forEach((elemento)=>{
+        productosAOrden.push({
+          productoID: elemento.id,
+          cantidad: elemento.cantidad
+        })
+      })
+
+      console.log(productosAOrden);
+
+      const resp = await axios.post("/api/orders", {
+        total: total,
+        tipo: "DOMICILIO",
+        productos: productosAOrden
+      }).catch((error)=>{
+        console.log(error);
+      });
+  
+      if (resp && resp.data) {
+        toast({
+          description: "Tu orden se ha enviado.",
+        })
+        console.log("Se creó la orden: ", resp.data);
+        setCart([]);
+
+        router.push("/pedidos");
+      }
+    }
+    else{
+      toast({
+        description: "Tu carrito de compra está vacío.",
+      })
+    }
+  }
+
+
+  let subtotal = cart
+    .reduce((total, product) => total + (product.price*product.cantidad), 0)
     .toFixed(2);
+
+  let totalIVA = (parseFloat(subtotal)*0.06).toFixed(2);
+
+  let total = (parseFloat(subtotal) + parseFloat(totalIVA)).toFixed(2);
 
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
         <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Shopping Cart
+          Carro de compras
         </h1>
 
         <form className="mt-12">
@@ -50,7 +113,7 @@ export default function ShoppingBagComponent() {
                           </Link>
                         </h4>
                         <p className="ml-4 text-sm font-medium text-gray-900">
-                          ${product.price}
+                          ${(product.price*product.cantidad)}
                         </p>
                       </div>
                       <p className="mt-1 text-sm text-gray-500">
@@ -64,15 +127,29 @@ export default function ShoppingBagComponent() {
                           className="h-5 w-5 flex-shrink-0 text-green-500"
                           aria-hidden="true"
                         />
-                        <span>In stock</span>
+                        <span>Cantidad: {product.cantidad}</span>
                       </p>
                       <div className="ml-4">
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-indigo-600 hover:text-indigo-500 mr-10"
+                          onClick={() => insertarUno(product.id)}
+                        >
+                          <span>Agregar uno</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="text-sm font-medium text-indigo-600 hover:text-indigo-500 mr-10"
+                          onClick={() => removerUno(product.id)}
+                        >
+                          <span>Remover uno</span>
+                        </button>
                         <button
                           type="button"
                           className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                           onClick={() => removeFromCart(product.id)}
                         >
-                          <span>Remove</span>
+                          <span>Quitar</span>
                         </button>
                       </div>
                     </div>
@@ -89,38 +166,55 @@ export default function ShoppingBagComponent() {
             </h2>
 
             <div>
-              <dl className="space-y-4">
+            <dl className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <dt className="text-base font-medium text-gray-900">Total</dt>
+                  <dt className="text-base font-medium text-gray-900">Subtotal</dt>
                   <dd className="ml-4 text-base font-medium text-gray-900">
                     ${subtotal}
                   </dd>
                 </div>
               </dl>
+              <dl className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <dt className="text-base font-medium text-gray-900">IVA (6%)</dt>
+                  <dd className="ml-4 text-base font-medium text-gray-900">
+                    ${totalIVA}
+                  </dd>
+                </div>
+              </dl>
+              <dl className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <dt className="text-base font-medium text-gray-900">Total</dt>
+                  <dd className="ml-4 text-base font-medium text-gray-900">
+                    ${total}
+                  </dd>
+                </div>
+              </dl>
               <p className="mt-1 text-sm text-gray-500">
-                Shipping and taxes will be calculated at checkout.
+                Se calculo un 6% de IVA
               </p>
             </div>
 
             <div className="mt-10">
               <button
-                type="submit"
+                type="button"
+                onClick={() => handleSubmitOrden(cart, total)}
                 className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               >
-                Checkout
+                Realizar pedido
               </button>
             </div>
 
             <div className="mt-6 text-center text-sm">
               <p>
-                or{" "}
-                <a
-                  href="#"
+                o{" "}
+                <Link
+                  href="/products"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
-                  Continue Shopping
+                  Continua comprando
                   <span aria-hidden="true"> &rarr;</span>
-                </a>
+                </Link>
               </p>
             </div>
           </section>

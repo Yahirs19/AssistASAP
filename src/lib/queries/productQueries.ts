@@ -15,5 +15,58 @@ export async function buscarProductoSlug(slug: string) {
 }
 
 export async function mostrarProducto() {
-  return await prisma.product.findMany();
+  return await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      slug: true,
+      imageUrl: true,
+      provedor: { 
+        select: {
+          Empresa: true
+        }
+      }
+    }
+  });
+}
+
+
+// Consultar proveedores
+export async function mostrarCategorias() {
+  return await prisma.categoria.findMany();
+}
+
+export async function filtrarProductos(nombre:string){
+  return await prisma.product.findMany({
+    select:{
+      id: true,
+      name: true,
+      price: true,
+      slug: true,
+      imageUrl: true,
+      provedor: { 
+        select: {
+          Empresa: true
+        }
+      }
+    },
+    where:{
+      // OR: [
+      //   {
+      //     provedor:{
+      //       Nombre:{
+      //         startsWith: proveedor
+      //       }
+      //     }
+      //   },
+      //   {
+      //     provedor:{
+      //       Nombre: proveedor
+      //     }
+      //   }
+      // ]
+      name: nombre
+    }
+  })
 }
