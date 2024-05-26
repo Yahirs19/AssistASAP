@@ -15,7 +15,7 @@ export const getClientId = async (id: string) => {
 
         
 
-        return clientId?.client.id
+        return clientId?.client?.id
     }
 
     return null;
