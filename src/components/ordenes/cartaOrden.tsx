@@ -25,7 +25,7 @@ export const CartaOrden = ({ordenInfo}: {ordenInfo:InfoDeOrdenes}) => {
 
 
     return (
-        <Card>
+        <Card key={ordenInfo.id}>
             <CardHeader>
                 <CardTitle>Orden ID: {ordenInfo.id}</CardTitle>
                 <CardDescription>Fecha de pedido: {ordenInfo.fecha}</CardDescription>

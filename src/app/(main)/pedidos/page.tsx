@@ -41,7 +41,7 @@ export default function Pedidos() {
       
       <div className="grid grid-cols-1 gap-4 md:grid md:grid-cols-2 md:gap-4 lg:max-w-7xl lg:px-8">
         {ordenes.map((orden)=>(
-          <CartaOrden ordenInfo = {orden}/>
+          <CartaOrden key={orden.id} ordenInfo = {orden}/>
         ))}
       </div>
     </>

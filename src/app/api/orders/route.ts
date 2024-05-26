@@ -2,74 +2,82 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 
+import { getClientId } from "@/utils/getClientId";
+
 export async function GET(request: Request){
   try{
     const user = await currentProfile();
 
     if(user){
-      const post = await db.ordenServicio.findMany({
-          select:{
-            id: true,
-            fecha: true,
-            estado: true,
-            total: true,
-            tipo: true,
-            cliente: {
-              select:{
-                profile: {
-                  select:{
-                    name:true,
-                    apellidoP: true,
-                    apellidoM: true,
-                    email: true,
-                    telephone: true
+      const clientID = await getClientId(user.userId);
+      console.log(clientID)
+      if(clientID){
+        const post = await db.ordenServicio.findMany({
+            select:{
+              id: true,
+              fecha: true,
+              estado: true,
+              total: true,
+              tipo: true,
+              cliente: {
+                select:{
+                  profile: {
+                    select:{
+                      name:true,
+                      apellidoP: true,
+                      apellidoM: true,
+                      email: true,
+                      telephone: true
+                    }
+                  }
+                },
+              },
+              mecanico: {
+                select:{
+                  profile: {
+                    select: {
+                      name:true,
+                      apellidoP: true,
+                      apellidoM: true,
+                      email: true,
+                      telephone: true
+                    }
                   }
                 }
               },
-            },
-            mecanico: {
-              select:{
-                profile: {
-                  select: {
-                    name:true,
-                    apellidoP: true,
-                    apellidoM: true,
-                    email: true,
-                    telephone: true
-                  }
-                }
-              }
-            },
-            productos: {
-              select: {
-                cantidad: true,
-                producto: {
-                  select: {
-                    name: true,
-                    imageUrl: true,
-                    price: true,
-                    description: true,
-                    slug: true,
-                    provedor:{
-                      select: {
-                        Empresa: true,
-                        Foto: true
-                      }
-                    },
-                    categoria: {
-                      select: {
-                        nombre: true
+              productos: {
+                select: {
+                  cantidad: true,
+                  producto: {
+                    select: {
+                      name: true,
+                      imageUrl: true,
+                      price: true,
+                      description: true,
+                      slug: true,
+                      provedor:{
+                        select: {
+                          Empresa: true,
+                          Foto: true
+                        }
+                      },
+                      categoria: {
+                        select: {
+                          nombre: true
+                        }
                       }
                     }
                   }
                 }
               }
+            },
+            where: { 
+              clienteID: clientID
             }
-          },
-          where: { clienteID: user.id },
-        });
+          });
+          return NextResponse.json(post);
+      }
 
-      return NextResponse.json(post);
     }
 
     return new NextResponse("Unathorized", {status: 401});
