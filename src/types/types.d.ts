@@ -1,3 +1,5 @@
+import { type Profile } from "@prisma/client";
+
 export type TypeUser = "CLIENTE" | "MECANICO";
 
 type Producto = {
@@ -58,3 +60,26 @@ type InfoDeOrdenes = {
       }
     }[]
   }
+
+export type ProductoCarrito = {
+    id:string,
+    name:string,
+    price:number,
+    slug:string,
+    imageUrl:string,
+    description: string,
+    provedor: {
+      Empresa:string
+    },
+    categoria: {
+      nombre: string
+    },
+    cantidad: number
+  }
+
+export interface ClientesMecanicos {
+  id: string,
+  profileId: string
+  profile: Profile
+  isSelected: boolean
+}

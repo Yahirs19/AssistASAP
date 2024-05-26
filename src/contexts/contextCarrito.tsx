@@ -1,20 +1,12 @@
 "use client";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  imageUrl: string;
-  description: string;
-  slug: string;
-  cantidad: number;
-}
+import { type ProductoCarrito } from "@/types/types";
 
 interface CartContextType {
-  cart: Product[];
-  setCart: React.Dispatch<React.SetStateAction<Product[]>>;
-  addToCart: (product: Product) => void;
+  cart: ProductoCarrito[];
+  setCart: React.Dispatch<React.SetStateAction<ProductoCarrito[]>>;
+  addToCart: (product: ProductoCarrito) => void;
   removeFromCart: (productId: string) => void;
   insertarUno: (productId: string) => void;
   removerUno: (productId: string) => void;
@@ -25,9 +17,9 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [cart, setCart] = useState<Product[]>([]);
+  const [cart, setCart] = useState<ProductoCarrito[]>([]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductoCarrito) => {
     const indexOfProduct = cart.findIndex((producto)=>producto.id === product.id);
     console.log(indexOfProduct)
     if(indexOfProduct >= 0){

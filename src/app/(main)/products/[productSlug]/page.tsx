@@ -1,4 +1,4 @@
-import { buscarProductoSlug } from "@/lib/queries/productQueries";
+import { buscarProductoSlug } from "@/utils/Queries/productQueries";
 import {
   CheckIcon,
   StarIcon,
@@ -16,6 +16,8 @@ const reviews = { average: 4, totalCount: 1624 };
 export default async function Example({ params }: { params: RouteParams }) {
   console.log(params.productSlug)
   const product = await buscarProductoSlug(params.productSlug);
+
+  console.log(product);
 
   if (!product) {
     notFound();

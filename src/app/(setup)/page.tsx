@@ -4,16 +4,26 @@ import Link from "next/link";
 import { CartProvider } from "@/contexts/contextCarrito";
 
 import { initialProfile } from "@/lib/initial-profile";
-import { hasTypeOfUser } from "@/utils/typeOfUser";
+import { checkTypeOfUser } from "@/utils/checkTypeOfUser";
+import { AsignarTipoUsuario } from "@/components/asignarTipoUsuario";
 
 export default async function Home() {
+  let hasTypeOfUser = false; 
+
   // Obtenemos el perfil del usuario
-  // const profile = await initialProfile();
+  const profile = await initialProfile();
+  const typeOfUser = await checkTypeOfUser(profile);
+
+  if(profile && !typeOfUser){
+    hasTypeOfUser = true;
+  }
+
+  console.log(hasTypeOfUser);
 
   return (
     <>
       {/*Pagina principal*/}
-
+      <AsignarTipoUsuario idUsuario={profile?.id} mostrarDialog={hasTypeOfUser}/>
       {/*          SUPUESTA A MUCHOS CAMBIOS             */}
       <div className="felx felx-col gap-8 ">
         <div className="pb-8">

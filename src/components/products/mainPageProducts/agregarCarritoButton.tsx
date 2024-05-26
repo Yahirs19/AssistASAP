@@ -2,6 +2,7 @@
 import React, { FormEvent } from "react";
 import { useCart } from "@/contexts/contextCarrito";
 import { useRouter } from "next/navigation";
+import { ProductoCarrito } from "@/types/types";
 
 // Define la interfaz para el objeto product
 interface Product {
@@ -16,7 +17,7 @@ interface Product {
 
 // Define las props del componente usando la interfaz Product
 interface AgregarCarritoButtonProps {
-  product: Product;
+  product: ProductoCarrito;
 }
 
 export default function AgregarCarritoButton({

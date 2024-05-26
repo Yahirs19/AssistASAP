@@ -7,6 +7,18 @@ export async function buscarProductoSlug(slug: string) {
     where: {
       slug: slug,
     },
+    include:{
+      categoria: {
+        select: {
+          nombre: true
+        }
+      },
+      provedor: {
+        select: {
+          Empresa: true
+        }
+      }
+    }
   });
 
   console.log("producto:", productoEncontrado);

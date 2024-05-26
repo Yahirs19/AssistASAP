@@ -3,7 +3,7 @@
 import ProductGrid from "@/components/products/productGrid";
 import { Button } from "@/components/ui/button";
 import { SearchProduct } from "@/components/products/componentesFiltrarProduct/searchProduct";
-import { filtrarProductos, mostrarProducto } from "@/lib/queries/productQueries";
+import { filtrarProductos, mostrarProducto } from "@/utils/Queries/productQueries";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
@@ -13,23 +13,11 @@ import { type Categoria, Proveedor } from "@prisma/client";
 import { SelectCategoria } from "@/components/products/componentesFiltrarProduct/selectCategoria";
 import { SelectProveedor } from "@/components/products/componentesFiltrarProduct/selectProveedor";
 
-type Producto = {
-  id:string,
-  name:string,
-  price:string,
-  slug:string,
-  imageUrl:string,
-  provedor: {
-    Empresa:string
-  },
-  categoria: {
-    nombre: string
-  }
-}
+import { type ProductoCarrito } from "@/types/types";
 
 export default function ProductsPage() {
-  const [productos, setProductos] = useState<Producto[]>([]); 
-  const [resultados, setResultados] = useState<Producto[]>([]);
+  const [productos, setProductos] = useState<ProductoCarrito[]>([]); 
+  const [resultados, setResultados] = useState<ProductoCarrito[]>([]);
 
   const [busqueda, setBusqueda] = useState<string>("");
 
@@ -157,6 +145,9 @@ export default function ProductsPage() {
               Filtrar productos
             </h2>
             <SearchProduct onChange={handleSearchChange} />
+          </div>
+
+          <div className="mx-auto mt-3 flex flex-row md:items-center md:justify-center gap-2">
             <SelectCategoria categorias={categorias} onChange={handleCategoriaChange}/>
             <SelectProveedor proveedores={proveedores} onChange={handleProveedorChange} />
           </div>

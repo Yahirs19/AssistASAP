@@ -23,12 +23,14 @@ import { usePathname } from "next/navigation";
 import MapImage from "@/assets/map.jpg";
 import IconImage from "@/assets/icon.png";
 
+import { useEffect } from "react";
+
 import UserMenu from "../user-menu";
 
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: false },
   {
-    name: "Mis Pedidos",
+    name: "Pedidos",
     href: "/pedidos",
     icon: ClipboardDocumentCheckIcon,
     current: false,

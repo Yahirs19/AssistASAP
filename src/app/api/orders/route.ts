@@ -93,16 +93,34 @@ export async function POST(request: Request) {
         const {
           total,
           tipo,
-          productos
+          productos,
+          clienteId,
+          mecanicoId
         } = res;
 
-        console.log(res);
-      
+        if(!clienteId && !mecanicoId){
+          const orden = await db.ordenServicio.create({
+            data: {
+              clienteID: userId.id,
+              tipo,
+              total,
+              productos:{
+                  createMany: {
+                      data: productos
+                  }
+              }
+            }
+          });
+
+          return NextResponse.json({ orden });
+        }
+
         const orden = await db.ordenServicio.create({
           data: {
-            clienteID: userId.id,
+            clienteID: clienteId,
             tipo,
             total,
+            mecanicoID: mecanicoId,
             productos:{
                 createMany: {
                     data: productos
@@ -111,8 +129,10 @@ export async function POST(request: Request) {
           }
         });
 
-
         return NextResponse.json({ orden });
+      
+
+
     }catch (error) {
         console.log("[SERVER_POST]", error);
         return new NextResponse("Internal Error", {status:500});

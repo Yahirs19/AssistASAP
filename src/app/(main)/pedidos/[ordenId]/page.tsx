@@ -1,6 +1,6 @@
 import { DatosOrden } from "@/components/ordenes/datosOrden";
 
-import { obtenerDetallesOrden } from "@/lib/queries/ordersQueries";
+import { obtenerDetallesOrden } from "@/utils/Queries/ordersQueries";
 import { notFound } from "next/navigation";
 
 export default async function DetallesOrden({ params }: { params: {ordenId:string} }) {
