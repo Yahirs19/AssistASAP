@@ -9,9 +9,9 @@ export async function GET(request: Request){
     const user = await currentProfile();
 
     if(user){
-      const clientID = await getClientId(user.userId);
-      console.log(clientID)
-      if(clientID){
+      const userID = await getClientId(user.userId);
+      console.log(userID)
+      if(userID){
         const post = await db.ordenServicio.findMany({
             select:{
               id: true,
@@ -72,7 +72,14 @@ export async function GET(request: Request){
               }
             },
             where: { 
-              clienteID: clientID
+              OR: [
+                {
+                  clienteID: userID
+                },
+                {
+                  mecanicoID: userID
+                }
+              ]
             }
           });
           return NextResponse.json(post);
@@ -99,6 +106,7 @@ export async function POST(request: Request) {
     try{
         const res = await request.json();
         const {
+          id,
           total,
           tipo,
           productos,
@@ -109,6 +117,7 @@ export async function POST(request: Request) {
         if(!clienteId && !mecanicoId){
           const orden = await db.ordenServicio.create({
             data: {
+              id,
               clienteID: userId.id,
               tipo,
               total,

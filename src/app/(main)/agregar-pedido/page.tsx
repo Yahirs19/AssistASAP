@@ -196,7 +196,7 @@ export default function AgregarPedido() {
         }
 
         
-        setResultadosCliente(prevState => prevState.filter((client) => ((client.profile.name + client.profile.apellidoP + client.profile.apellidoM).toLowerCase().includes(busquedaCliente.replace(/\s/g, '').toLowerCase()) || cliente.profile.id.includes(busquedaCliente.toLowerCase()))));
+        setResultadosCliente(prevState => prevState.filter((client) => ((client.profile.name + client.profile.apellidoP + client.profile.apellidoM).toLowerCase().includes(busquedaCliente.replace(/\s/g, '').toLowerCase()) || client.profile.id.includes(busquedaCliente.toLowerCase()))));
         
     }, [busquedaCliente]);
 
@@ -307,6 +307,7 @@ export default function AgregarPedido() {
             }
       
             const resp = await axios.post("/api/orders", {
+              id: idVenta,
               total: total,
               tipo: "DOMICILIO",
               productos: productosAOrden,
