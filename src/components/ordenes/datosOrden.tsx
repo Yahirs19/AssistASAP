@@ -106,7 +106,7 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
                             <div className="ml-4">
                               <button
                                 type="button"
-                                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                                className="text-sm font-medium text-blue-600 hover:text-blue-500"
                                 onClick={() => console.log("Test")}
                               >
                                 <span>Quitar</span>

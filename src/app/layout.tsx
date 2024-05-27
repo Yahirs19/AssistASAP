@@ -5,7 +5,6 @@ import MainHeader from "../components/navigation/main-header";
 import GoogleMapsLayout from "@/app/(maps)/mapsTest/layout";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, neobrutalism } from "@clerk/themes";
 import { CartProvider } from "@/contexts/contextCarrito";
 
 import { Toaster } from "@/components/ui/toaster";
@@ -23,19 +22,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  /* 
-  ClerkProvider, sirve para hacer uso de las funcionalidades y componentes de Clerk,
-  en este caso se aplicó para toda la aplicación
-
-  Y se ve un ejemplo del uso de los temas predeterminados que Clerk provee
-  para sus componentes
-  */
   return (
     <CartProvider>
-      <ClerkProvider
+      <ClerkProvider 
         appearance={{
-          baseTheme: dark,
-          signIn: { baseTheme: neobrutalism },
+          
         }}
       >
         <html lang="en">

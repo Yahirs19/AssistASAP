@@ -11,7 +11,8 @@ import {
   XMarkIcon,
   ClipboardDocumentCheckIcon,ArchiveBoxIcon,
   ChatBubbleLeftRightIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  MapIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -47,6 +48,12 @@ const navigation = [
     icon: ArchiveBoxIcon,
     current: false,
   },
+  {
+    name: "Ubicacion",
+    href: "/mapsTest",
+    icon: MapIcon,
+    current: false,
+  }
 ];
 
 export default function MainHeader({ content }: { content: ReactNode }) {
@@ -117,7 +124,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-500 px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
                       <Image
                         className="h-8 w-auto"
@@ -136,8 +143,8 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                                   onClick={() => setSidebarOpen(false)}
                                   className={`${
                                     path === item.href
-                                      ? "bg-indigo-700 text-white"
-                                      : `text-indigo-200 hover:text-white hover:bg-indigo-700`
+                                      ? "bg-blue-400 text-white"
+                                      : `text-indigo-200 hover:text-white hover:bg-blue-500`
                                   }
                                     group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                                   `}
@@ -163,7 +170,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                           <Link
                             onClick={() => setSidebarOpen(false)}
                             href="/"
-                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-blue-500 hover:text-white"
                           >
                             <Cog6ToothIcon
                               className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
@@ -184,7 +191,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-500 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <Image
                 className="h-8 w-auto"
@@ -202,8 +209,8 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                           href={item.href}
                           className={`${
                             path.startsWith(item.href)
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700"
+                              ? "bg-blue-600 text-white"
+                              : "text-indigo-200 hover:text-white hover:bg-blue-600"
                           }
                             group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                           `}
@@ -229,7 +236,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                 <li className="mt-auto">
                 <a
                     href="/chatbot"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-blue-600 hover:text-white"
                   >
                     <ChatBubbleLeftRightIcon
                       className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
@@ -239,7 +246,7 @@ export default function MainHeader({ content }: { content: ReactNode }) {
                   </a>
                   <a
                     href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-blue-600 hover:text-white"
                   >
                     <Cog6ToothIcon
                       className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"

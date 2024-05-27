@@ -135,21 +135,21 @@ export default function ShoppingBagComponent() {
                         <div className="ml-4">
                           <button
                             type="button"
-                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 mr-10"
+                            className="text-sm font-medium text-blue-600 hover:text-blue-500 mr-10"
                             onClick={() => insertarUno(product.id)}
                           >
                             <span>Agregar uno</span>
                           </button>
                           <button
                             type="button"
-                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 mr-10"
+                            className="text-sm font-medium text-blue-600 hover:text-blue-500 mr-10"
                             onClick={() => removerUno(product.id)}
                           >
                             <span>Remover uno</span>
                           </button>
                           <button
                             type="button"
-                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                            className="text-sm font-medium text-blue-600 hover:text-blue-500" 
                             onClick={() => removeFromCart(product.id)}
                           >
                             <span>Quitar</span>
