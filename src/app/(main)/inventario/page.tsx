@@ -188,7 +188,7 @@ export default function Home() {
     const resp = await axios
       .delete(`/api/products/productosGenerales?id=${userId}`)
       .catch((error) => {
-        console.log("catch: ", error.message);
+        console.log("Error: ", error.message);
       });
 
     if (resp && resp.data) {

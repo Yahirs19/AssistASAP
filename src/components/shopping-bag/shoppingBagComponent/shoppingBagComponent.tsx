@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Product, useCart } from "../../../contexts/contextCarrito";
+import { useCart } from "../../../contexts/contextCarrito";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
@@ -14,6 +14,8 @@ import axios from "axios";
 
 export default function ShoppingBagComponent() {
   const { cart, setCart, removeFromCart, insertarUno, removerUno } = useCart();
+
+  const {v4: uuidv4} = require('uuid');
 
   const router = useRouter()
 
@@ -41,6 +43,7 @@ export default function ShoppingBagComponent() {
       console.log(productosAOrden);
 
       const resp = await axios.post("/api/orders", {
+        id: uuidv4(),
         total: total,
         tipo: "DOMICILIO",
         productos: productosAOrden

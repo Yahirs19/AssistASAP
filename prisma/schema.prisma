@@ -189,7 +189,7 @@ enum TipoOrdenServicio {
 // Si la orden es a domicilio, en el front checará la ubicación del mecánico y la enrutará a la ubicación del cliente
 // Si la orden es para recoger o atender en un establecimiento, se marca la ruta entre la ubicación del cliente y el establecimiento seleccionado
 model OrdenServicio {
-  id String @id @default(uuid())
+  id String @id
   fecha DateTime @default(now())
   estado EstadoOrdenServicio @default(PENDIENTE)
   tipo TipoOrdenServicio

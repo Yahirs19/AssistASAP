@@ -70,16 +70,6 @@ export async function GET(request: Request){
                   }
                 }
               }
-            },
-            where: { 
-              OR: [
-                {
-                  clienteID: userID
-                },
-                {
-                  mecanicoID: userID
-                }
-              ]
             }
           });
           return NextResponse.json(post);
@@ -114,7 +104,7 @@ export async function POST(request: Request) {
           mecanicoId
         } = res;
 
-        if(!clienteId && !mecanicoId){
+        if(!mecanicoId){
           const orden = await db.ordenServicio.create({
             data: {
               id,
@@ -134,6 +124,7 @@ export async function POST(request: Request) {
 
         const orden = await db.ordenServicio.create({
           data: {
+            id,
             clienteID: clienteId,
             tipo,
             total,
@@ -157,3 +148,24 @@ export async function POST(request: Request) {
 
   
   }
+
+export async function DELETE(request: NextRequest) {
+  try{
+      const id = request.nextUrl.searchParams.get('id');
+
+      if(id){
+        const orden = await db.ordenServicio.delete({
+            where: { id: id },
+          });
+
+        return NextResponse.json(orden);
+      }
+
+      return new NextResponse("Invalid Input", {status: 400});
+  }
+  catch (error) {
+      // En caso de error, se retorna una respuesta con un código de error del servidor
+      console.log("[SERVER_POST]", error);
+      return new NextResponse("Internal Error", {status:500});
+  }
+}

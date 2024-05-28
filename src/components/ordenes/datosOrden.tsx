@@ -6,6 +6,10 @@ import Link from "next/link";
 
 import { type Orden } from "@/utils/Queries/ordersQueries";
 
+import {Button} from "@/components/ui/button";
+
+import { useRouter } from "next/navigation";
+
 import {
   Alert,
   AlertDescription,
@@ -19,6 +23,25 @@ import axios from "axios";
 import { notFound } from "next/navigation";
 
 export const DatosOrden = ({datos}: {datos:Orden}) => {
+
+  const route = useRouter();
+  const {toast} = useToast();
+
+  const handleEliminarOrden = async (ordenID: string) => {
+    const resp = await axios.delete(`/api/orders?id=${ordenID}`)
+    .catch((error) => {
+      console.log("Error: ", error.message);
+    });
+
+    if (resp && resp.data) {
+      console.log("DeleteUser->resp.data: ", resp.data);
+      route.push("/pedidos");
+
+      toast({
+        description: "Se ha eliminado el pedido.",
+      });
+    }
+  }
 
     if(datos){
 
@@ -103,15 +126,7 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
                               />
                               <span>Cantidad: {product.cantidad}</span>
                             </p>
-                            <div className="ml-4">
-                              <button
-                                type="button"
-                                className="text-sm font-medium text-blue-600 hover:text-blue-500"
-                                onClick={() => console.log("Test")}
-                              >
-                                <span>Quitar</span>
-                              </button>
-                            </div>
+                            
                           </div>
                         </div>
                       </li>
@@ -139,6 +154,16 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
       
                 </section>
               </form>
+
+              <div className="mt-10">
+              <button
+                type="button"
+                onClick={() => handleEliminarOrden(datos.id)}
+                className="w-full rounded-md border border-transparent bg-red-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              >
+                Eliminar pedido
+              </button>
+            </div>
           </div>
         </div>
         );
