@@ -87,11 +87,14 @@ export async function GET(request: Request){
 }
 
 export async function POST(request: Request) {
-    const userId = await currentProfile();
+    const user = await currentProfile();
 
-    if(!userId) { 
+
+    if(!user) { 
         return new NextResponse("Unathorized", {status: 401});
     }
+
+    const userID = await getClientId(user.userId);
 
     try{
         const res = await request.json();
@@ -108,7 +111,7 @@ export async function POST(request: Request) {
           const orden = await db.ordenServicio.create({
             data: {
               id,
-              clienteID: userId.id,
+              clienteID: userID,
               tipo,
               total,
               productos:{
