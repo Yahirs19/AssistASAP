@@ -18,6 +18,19 @@ import {
     TableRow,
   } from "@/components/ui/table";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
+  
+
 import { Button } from "@/components/ui/button";
 
 import { useCart } from "@/contexts/contextCarrito";
@@ -136,9 +149,24 @@ export function DataTableProductos<TData, TValue>({
             {table.getFilteredRowModel().rows.length} producto(s) seleccionados.
             </div>
 
-            <div>
-                <Button variant="destructive" onClick={deleteAllSelectedProd} disabled={disabled}>Eliminar productos seleccionados</Button>
-            </div>
+
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={disabled}>Eliminar productos seleccionados</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás seguro que quieres eliminar los productos?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se podrá deshacer.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteAllSelectedProd}>Confirmar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
         </div>
       </>
     )
