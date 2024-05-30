@@ -128,7 +128,7 @@ export const columns: ColumnDef<ProductoCarrito>[] = [
         accessorKey: "subtotal",
         header: "Subtotal",
         cell: ({row}) => {  
-            const precioSubtotal = (parseFloat(row.original.price) * parseFloat(row.original.cantidad)).toFixed(2);   
+            const precioSubtotal = (parseFloat(row.original.price) * parseFloat(row.original.cantidad as string)).toFixed(2);   
 
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",

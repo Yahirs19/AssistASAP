@@ -70,10 +70,10 @@ export type ProductoCarrito = {
     description: string,
     provedor: {
       Empresa:string
-    },
+    } | null,
     categoria: {
       nombre: string
-    },
+    } | null,
     cantidad: number
   }
 
@@ -82,4 +82,13 @@ export interface ClientesMecanicos {
   profileId: string
   profile: Profile
   isSelected: boolean
+}
+
+export type ProductosEnOrden = {
+  ordenServicioID: string,
+  productoID: string,
+  producto: ProductoCarrito,
+  cantidad: number,
+  assignedAt: Date
+
 }

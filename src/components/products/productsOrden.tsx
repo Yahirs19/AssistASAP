@@ -14,7 +14,7 @@ export const ProductsOrden = (producto:ProductoCarrito) => {
     const productIndex = cart.findIndex((product) => product.id === producto.id);
 
     return (
-        <div className="flex items-center justify-between space-x-4">
+        <div key={producto.id} className="flex items-center justify-between space-x-4">
             <div className="flex items-center space-x-4">
                 <img
                 src={producto.imageUrl}

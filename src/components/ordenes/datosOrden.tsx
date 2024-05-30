@@ -2,9 +2,12 @@
 
 import { CheckIcon } from "@heroicons/react/20/solid";
 
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 import { type Orden } from "@/utils/Queries/ordersQueries";
+
+import { DataTableOrden } from "./editarOrdenes/data-table";
+import {columns} from "./editarOrdenes/columns";
 
 import {
   AlertDialog,
@@ -32,8 +35,10 @@ import { useToast } from "@/components/ui/use-toast";
 // Para editar y eliminar la orden
 import axios from "axios";
 import { notFound } from "next/navigation";
+import { AgregarProductoOrden } from "./editarOrdenes/agregarProducto";
 
 export const DatosOrden = ({datos}: {datos:Orden}) => {
+
 
   const route = useRouter();
   const {toast} = useToast();
@@ -56,13 +61,17 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
 
     if(datos){
 
-        let total = datos?.productos
+        let subtotal = datos?.productos
         .reduce((total, product) => total + (product.producto.price*product.cantidad), 0)
         .toFixed(2);
 
+        let totalIVA = (parseFloat(subtotal)*0.06).toFixed(2);
+
+        let total = (parseFloat(subtotal) + parseFloat(totalIVA)).toFixed(2);
+
         return (
           <div className="bg-white">
-            <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
+            <div className="mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
               <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                 Detalles de la orden
               </h1>
@@ -95,54 +104,13 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
                     Productos en tu orden
                   </h2>
       
-                  <ul
-                    role="list"
-                    className="divide-y divide-gray-200 border-b border-t border-gray-200"
-                  >
-                    {datos?.productos.map((product) => (
-                      <li key={product.productoID} className="flex py-6">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={product.producto.imageUrl}
-                            alt={product.producto.name}
-                            className="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32"
-                          />
-                        </div>
-      
-                        <div className="ml-4 flex flex-1 flex-col sm:ml-6">
-                          <div>
-                            <div className="flex justify-between">
-                              <h4 className="text-sm">
-                                <Link
-                                  href={`/products/${product.producto.slug}`}
-                                  className="font-medium text-gray-700 hover:text-gray-800"
-                                >
-                                  {product.producto.name}
-                                </Link>
-                              </h4>
-                              <p className="ml-4 text-sm font-medium text-gray-900">
-                                ${(product.producto.price*product.cantidad)}
-                              </p>
-                            </div>
-                            <p className="mt-1 text-sm text-gray-500">
-                              {product.producto.description}
-                            </p>
-                          </div>
-      
-                          <div className="mt-4 flex flex-1 items-end justify-between">
-                            <p className="flex items-center space-x-2 text-sm text-gray-700">
-                              <CheckIcon
-                                className="h-5 w-5 flex-shrink-0 text-green-500"
-                                aria-hidden="true"
-                              />
-                              <span>Cantidad: {product.cantidad}</span>
-                            </p>
-                            
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  <DataTableOrden columns={columns} data={datos?.productos} cantProductos={datos?.productos.length}/>
+                  
+                  <div className="w-full flex justify-end pr-5 mt-5">
+                  <AgregarProductoOrden idOrden = {datos.id}>
+                    <Button variant="secondary">Agregar producto</Button>
+                  </AgregarProductoOrden>
+                  </div>
                 </section>
       
                 {/* Order summary */}
@@ -154,13 +122,32 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
       
                   <div>
                     <dl className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <dt className="text-base font-medium text-gray-900">Total</dt>
-                        <dd className="ml-4 text-base font-medium text-gray-900">
-                          ${total}
-                        </dd>
-                      </div>
-                    </dl>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-base font-medium text-gray-900">Subtotal</dt>
+                          <dd className="ml-4 text-base font-medium text-gray-900">
+                            ${subtotal}
+                          </dd>
+                        </div>
+                      </dl>
+                      <dl className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <dt className="text-base font-medium text-gray-900">IVA (6%)</dt>
+                          <dd className="ml-4 text-base font-medium text-gray-900">
+                            ${totalIVA}
+                          </dd>
+                        </div>
+                      </dl>
+                      <dl className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <dt className="text-base font-medium text-gray-900">Total</dt>
+                          <dd className="ml-4 text-base font-medium text-gray-900">
+                            ${total}
+                          </dd>
+                        </div>
+                      </dl>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Se calculo un 6% de IVA
+                      </p>
                   </div>
       
                 </section>
@@ -172,7 +159,7 @@ export const DatosOrden = ({datos}: {datos:Orden}) => {
                 <AlertDialogTrigger asChild>
                   <button
                     type="button"
-                    className="w-full rounded-md border border-transparent bg-red-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                    className="w-full pl-6 pr-6 rounded-md border border-transparent bg-red-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
                     Eliminar pedido
                   </button>

@@ -13,14 +13,27 @@ export async function obtenerDetallesOrden(id:string) {
                 },
                 productos: {
                     include:{
-                        producto: true
+                        producto: {
+                            include: {
+                                categoria: {
+                                    select: {
+                                        nombre: true
+                                    }
+                                },
+                                provedor: {
+                                    select: {
+                                        Empresa: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 cliente:{
                     include:{
                         profile: true
                     }
-                }
+                },
             },
             where: {
                 id: id
